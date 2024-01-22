@@ -1,0 +1,20 @@
+body { 
+    background-color: black;
+    color: white;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    margin: 0 auto;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+div.container { 
+    position: absolute;
+    bottom: 50%;
+    transform: translate(0, 50%);
+}
