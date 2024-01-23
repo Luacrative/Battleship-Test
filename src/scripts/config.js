@@ -1,10 +1,10 @@
 export default {
     SHIPS: {
-        "Carrier": 5,
-        "Battleship": 4,
-        "Submarine": 3,
-        "Destroyer": 3,
-        "Cruiser": 2
+        "Carrier": { Size: 5 },
+        "Battleship": { Size: 4 },
+        "Submarine": { Size: 3 },
+        "Destroyer": { Size: 3 },
+        "Cruiser": { Size: 2 }
     },
 
     GRID_SIZE: 10
