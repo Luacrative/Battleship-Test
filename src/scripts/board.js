@@ -1,11 +1,10 @@
 import config from "./config.js";
 import Ship from "./ship.js";
 
-const ALREADY_SHOT = -1;
-
 class Grid {
     constructor(size) {
         this.cells = new Array(size).fill(new Array(size, null));
+        this.cellsHit = new Array(size).fill(new Array(size, false));
         this.size = size;
     }
 }
@@ -46,22 +45,21 @@ class Board {
         return true;
     }
 
-    fireShot(x, y) {
+    fireShot(x, y) { // -> [success, hitShip, sunkShip]
         if (x < 0 || y < 0 || x > this.#grid.size || y > this.#grid.size)
             throw new Error("Tried to fire out of bounds");
 
         const cell = this.#grid[y][x];
+        if (this.#grid.cellsHit[y][x])
+            return [false, false, false];
 
-        if (cell == null)
-            return false;
-        else if (cell != ALREADY_SHOT) {
-            const ship = this.#ships[cell];
+        const ship = this.#ships(cell);
+        if (ship) {
             ship.hit();
-
-            this.#grid[y][x] = ALREADY_SHOT;
+            this.#grid.cellsHit[y][x] = true;
         }
 
-        return true;
+        return [true, ship != null, ship.isSunk()];
     }
 }
 
