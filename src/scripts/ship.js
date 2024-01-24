@@ -1,7 +1,7 @@
 class Ship {
     #sunk = false;
 
-    constructor(length, health) {
+    constructor({length, health}) {
         this.length = length;
         this.health = health;
     }
