@@ -13,13 +13,13 @@ class Grid {
             for (let y = yStart; y < yEnd; y++)
                 for (let x = xStart; x < xEnd; x++)
                     if (this.cells[y][x] != null)
-                        return false; 
-        
+                        return false;
+
         for (let y = yStart; y < yEnd; y++)
             for (let x = xStart; x < xEnd; x++)
                 this.cells[y][x] = value;
-        
-        return true; 
+
+        return true;
     }
 }
 
@@ -45,15 +45,15 @@ class Board {
         if (xStart < 0 || yStart < 0)
             return false;
 
-        const size = config.SHIPS[shipName].size; 
-        const xEnd = horizontal ? xStart + size : xStart + 1; 
-        const yEnd = horizontal ? yStart + 1 : yStart + size; 
-        
+        const size = config.SHIPS[shipName].size;
+        const xEnd = horizontal ? (xStart + size) : (xStart + 1);
+        const yEnd = horizontal ? (yStart + 1) : (yStart + size);
+
         if (xEnd > 10 || yEnd > 10)
             return false;
 
         const shipId = this.#makeShip(shipName);
-        const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd, false); 
+        const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd, false);
 
         return placed;
     }

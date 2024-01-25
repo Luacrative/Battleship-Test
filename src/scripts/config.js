@@ -1,10 +1,10 @@
 export default {
     SHIPS: {
-        "Carrier": { Size: 5, Health: 5},
-        "Battleship": { Size: 4, Health: 4},
-        "Submarine": { Size: 3, Health: 3},
-        "Destroyer": { Size: 3, Health: 3},
-        "Cruiser": { Size: 2, Health: 2}
+        "Carrier": { size: 5, health: 5},
+        "Battleship": { size: 4, health: 4},
+        "Submarine": { size: 3, health: 3},
+        "Destroyer": { size: 3, health: 3},
+        "Cruiser": { size: 2, health: 2}
     },
 
     GRID_SIZE: 10
