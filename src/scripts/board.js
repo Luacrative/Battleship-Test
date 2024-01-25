@@ -7,6 +7,20 @@ class Grid {
         this.cellsHit = new Array(size).fill(new Array(size, false));
         this.size = size;
     }
+
+    setCells(value, xStart, xEnd, yStart, yEnd, override) {
+        if (!override) 
+            for (let y = yStart; y < yEnd; y++)
+                for (let x = xStart; x < xEnd; x++)
+                    if (this.cells[y][x] != null)
+                        return false; 
+        
+        for (let y = yStart; y < yEnd; y++)
+            for (let x = xStart; x < xEnd; x++)
+                this.cells[y][x] = value;
+        
+        return true; 
+    }
 }
 
 class Board {
@@ -27,22 +41,21 @@ class Board {
         return this.#ships.length;
     }
 
-    placeShip(shipName, xStart, yStart) {
+    placeShip(shipName, xStart, yStart, horizontal) {
         if (xStart < 0 || yStart < 0)
             return false;
 
-        const size = config.SHIPS[shipName].size;
-        const xEnd = xStart + size, yEnd = yStart + size;
-
+        const size = config.SHIPS[shipName].size; 
+        const xEnd = horizontal ? xStart + size : xStart + 1; 
+        const yEnd = horizontal ? yStart + 1 : yStart + size; 
+        
         if (xEnd > 10 || yEnd > 10)
             return false;
 
         const shipId = this.#makeShip(shipName);
-        for (let y = yStart; y < yEnd; y++)
-            for (let x = xStart; x < xEnd; x++)
-                this.#grid[y][x] = shipId;
+        const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd, false); 
 
-        return true;
+        return placed;
     }
 
     fireShot(x, y) { // -> [success, hitShip, sunkShip]
