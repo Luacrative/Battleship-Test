@@ -3,17 +3,16 @@ import Ship from "./ship.js";
 
 class Grid {
     constructor(size) {
-        this.cells = new Array(size).fill(new Array(size, null));
-        this.cellsHit = new Array(size).fill(new Array(size, false));
+        this.cells = Array.from({length: size}, _ => Array().fill(null));
+        this.cellsHit = Array.from({length: size}, _ => Array().fill(false));
         this.size = size;
     }
 
-    setCells(value, xStart, xEnd, yStart, yEnd, override) {
-        if (!override) 
-            for (let y = yStart; y < yEnd; y++)
-                for (let x = xStart; x < xEnd; x++)
-                    if (this.cells[y][x] != null)
-                        return false;
+    setCells(value, xStart, xEnd, yStart, yEnd) {
+        for (let y = yStart; y < yEnd; y++)
+            for (let x = xStart; x < xEnd; x++)
+                if (this.cells[y][x] != null)
+                    return false;
 
         for (let y = yStart; y < yEnd; y++)
             for (let x = xStart; x < xEnd; x++)
@@ -38,7 +37,7 @@ class Board {
         const ship = new Ship({ shipConfig });
         this.#ships.push(ship);
 
-        return this.#ships.length;
+        return this.#ships.length - 1;
     }
 
     placeShip(shipName, xStart, yStart, horizontal) {
@@ -53,7 +52,7 @@ class Board {
             return false;
 
         const shipId = this.#makeShip(shipName);
-        const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd, false);
+        const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd);
 
         return placed;
     }
@@ -62,17 +61,17 @@ class Board {
         if (x < 0 || y < 0 || x > this.#grid.size || y > this.#grid.size)
             throw new Error("Tried to fire out of bounds");
 
-        const cell = this.#grid[y][x];
+        const cell = this.#grid.cells[y][x];
         if (this.#grid.cellsHit[y][x])
             return [false, false, false];
 
-        const ship = this.#ships(cell);
-        if (ship) {
+        const ship = this.#ships[cell];
+        if (ship != null) {
             ship.hit();
             this.#grid.cellsHit[y][x] = true;
         }
 
-        return [true, ship != null, ship.isSunk()];
+        return [true, ship != null, ship?.isSunk()];
     }
 }
 
