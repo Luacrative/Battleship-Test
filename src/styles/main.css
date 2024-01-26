@@ -1,0 +1,72 @@
+* { 
+    text-transform: uppercase;
+}
+
+body { 
+    background-color: black;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+#container { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#start-screen { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+#bg-img { 
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: url("../../assets/wallpaper.jpg");
+    opacity: 0.6;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+
+    transition: filter 0.2s;
+}
+
+.big-text { 
+    font-size: 5em;
+}
+
+.text-shadow { 
+    text-shadow: 2px 5px 5px rgba(0, 0, 0, 0.7);
+}
+
+button { 
+    font-size: 2rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 60px;
+    border-radius: 5px;
+    outline: none;
+    border: 2px solid white;
+
+    transition: transform 0.2s, border-radius 0.1s;
+}
+
+button:hover { 
+    cursor: pointer;
+    transform: scale(1.05);
+    border-radius: 2px;
+}
+
+#start:hover ~ #bg-img { 
+    filter: blur(2px);
+    opacity: 0.5;
+}
