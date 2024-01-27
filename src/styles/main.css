@@ -1,22 +1,27 @@
-* { 
+* {
     text-transform: uppercase;
 }
 
-body { 
+:root {
+    --grid-border-color: white;
+    --grid-border-thickness: 2px;
+}
+
+body {
     background-color: black;
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
 }
 
-#container { 
+#container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-#start-screen { 
+#start-screen {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,10 +29,14 @@ body {
 
     height: 100vh;
     width: 100vw;
+
+    display: none;
 }
 
-#bg-img { 
+.bg-img {
     position: absolute;
+    left: 0;
+    top: 0;
     width: 100vw;
     height: 100vh;
     background: url("../../assets/wallpaper.jpg");
@@ -40,15 +49,15 @@ body {
     transition: filter 0.2s;
 }
 
-.big-text { 
+.big-text {
     font-size: 5em;
 }
 
-.text-shadow { 
+.text-shadow {
     text-shadow: 2px 5px 5px rgba(0, 0, 0, 0.7);
 }
 
-button { 
+button {
     font-size: 2rem;
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
@@ -60,13 +69,13 @@ button {
     transition: transform 0.2s, border-radius 0.1s;
 }
 
-button:hover { 
+button:hover {
     cursor: pointer;
     transform: scale(1.05);
     border-radius: 2px;
 }
 
-#start:hover ~ #bg-img { 
+#start:hover~#bg-img {
     filter: blur(2px);
     opacity: 0.5;
 }
