@@ -1,8 +1,7 @@
 import config from "../scripts/config.js";
+import Draggable from "../scripts/draggable.js";
 
 const setup = document.querySelector("#setup");
-
-const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const addCellBorders = (cell, isTop, isBot, isLeft, isRight) => {
     if (isTop)
@@ -36,6 +35,8 @@ const makeGrid = () => {
     setup.appendChild(gridCenter);
 
     // Row ticks 
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     const rowTicks = document.createElement("div");
     rowTicks.classList.add("row-ticks");
     gridCenter.appendChild(rowTicks);
@@ -67,8 +68,39 @@ const makeGrid = () => {
     gridCenter.appendChild(setupGrid);
 }
 
+const makeShipOptions = () => {
+    const shipOptions = document.createElement("div");
+    shipOptions.setAttribute("id", "ship-options");
+
+    const ships = [];
+
+    for (const [ship, { size }] of Object.entries(config.SHIPS)) {
+        const image = document.createElement("div");
+        image.classList.add("ship-image");
+
+        for (let i = 0; i < size; i++) {
+            const segment = document.createElement("div");
+            segment.classList.add("ship-segment");
+            image.appendChild(segment);
+        }
+
+        shipOptions.appendChild(image);
+        ships.push(image);
+    }
+
+    setup.appendChild(shipOptions);
+
+    return ships;
+}
+
 const start = () => {
     makeGrid();
+
+    const shipOptions = makeShipOptions();
+    shipOptions.forEach(shipOption => {
+        const dragController = new Draggable(shipOption);
+        dragController.connect();
+    });
 };
 
 const end = () => {

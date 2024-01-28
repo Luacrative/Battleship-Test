@@ -1,0 +1,28 @@
+:root { 
+    --ship-rounding: 10px;
+}
+
+.ship-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 1.5px solid white;
+    border-radius: var(--ship-rounding);
+}
+
+.ship-segment {
+    background-color: black;
+    border: 1.5px solid white;
+    width: 40px;
+    height: 40px;
+}
+
+.ship-segment:nth-child(1) { 
+    border-radius: var(--ship-rounding) 0px 0px var(--ship-rounding);
+}
+
+.ship-segment:nth-last-child(1) { 
+    border-radius: 0px var(--ship-rounding) var(--ship-rounding) 0px;
+}

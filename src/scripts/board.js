@@ -3,8 +3,8 @@ import Ship from "./ship.js";
 
 class Grid {
     constructor(size) {
-        this.cells = Array.from({length: size}, _ => Array().fill(null));
-        this.cellsHit = Array.from({length: size}, _ => Array().fill(false));
+        this.cells = Array.from({ length: size }, _ => Array().fill(null));
+        this.cellsHit = Array.from({ length: size }, _ => Array().fill(false));
         this.size = size;
     }
 
