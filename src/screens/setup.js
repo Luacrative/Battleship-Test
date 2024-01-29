@@ -1,4 +1,6 @@
 import config from "../scripts/config.js";
+import mouse from "../scripts/mouse.js";
+import Board from "../scripts/board.js";
 import Draggable from "../scripts/draggable.js";
 
 const setup = document.querySelector("#setup");
@@ -96,10 +98,22 @@ const makeShipOptions = () => {
 const start = () => {
     makeGrid();
 
+    const board = new Board();
     const shipOptions = makeShipOptions();
+
     shipOptions.forEach(shipOption => {
         const dragController = new Draggable(shipOption);
         dragController.connect();
+        dragController.setUpdateCallback((mouseX, mouseY, clone) => { 
+            clone.hidden = true; 
+
+            const cell = mouse.target; 
+            if (cell.classList.contains("grid-cell")) { 
+                cell.classList.add("cell-selected");
+            }
+            
+            clone.hidden = false; 
+        });
     });
 };
 

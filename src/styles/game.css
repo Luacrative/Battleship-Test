@@ -1,4 +1,4 @@
-:root { 
+:root {
     --ship-rounding: 10px;
 }
 
@@ -15,14 +15,14 @@
 .ship-segment {
     background-color: black;
     border: 1.5px solid white;
-    width: 40px;
+    width: 45px;
     height: 40px;
 }
 
-.ship-segment:nth-child(1) { 
+.ship-segment:nth-child(1) {
     border-radius: var(--ship-rounding) 0px 0px var(--ship-rounding);
 }
 
-.ship-segment:nth-last-child(1) { 
+.ship-segment:nth-last-child(1) {
     border-radius: 0px var(--ship-rounding) var(--ship-rounding) 0px;
 }

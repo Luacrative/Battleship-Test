@@ -1,3 +1,6 @@
+const X_OFFSET = 1;
+const Y_OFFSET = -25;
+
 class Draggable {
     #c1 = 0;
     #c2 = 0;
@@ -5,30 +8,44 @@ class Draggable {
     #c4 = 0;
     #onMouseMove = undefined;
     #onMouseUp = undefined;
-    #imageParent = undefined;
     #clone = null;
 
     constructor(image) {
         this.image = image;
-        this.#imageParent = image.parentElement;
+        this.onUpdate = undefined;
+        this.onRelease = undefined;
+    }
+
+    setUpdateCallback(callback) { 
+        this.onUpdate = callback;
+    }
+
+    setReleaseCallback(callback) { 
+        this.onRelease = callback;
     }
 
     #dragged(e) {
-        this.#clone = this.image.cloneNode(true);
-        this.#clone.classList.add("draggable");
-        this.#imageParent.appendChild(this.#clone);
+        const clone = this.image.cloneNode(true);
+        clone.classList.add("draggable");
+        clone.style.left = `${e.clientX + X_OFFSET}px`; 
+        clone.style.top = `${e.clientY + Y_OFFSET}px`; 
+        document.body.appendChild(clone);
 
-        this.#c3 = e.clientX;
-        this.#c4 = e.clientY;
+        this.#c1 = e.clientX - clone.offsetLeft; 
+        this.#c2 = e.clientY - clone.offsetTop; 
+        this.#clone = clone; 
 
         this.#onMouseMove = e => {
             e.preventDefault();
-            this.#update(e)
+            this.#update(e);
         }
 
         this.#onMouseUp = e => {
             e.preventDefault();
-            this.#released();
+            this.#released(e);
+
+            clone.remove();
+            this.#clone = null;
         }
 
         document.addEventListener("mousemove", this.#onMouseMove);
@@ -36,20 +53,22 @@ class Draggable {
     }
 
     #update(e) {
-        const clone = this.#clone;
+        this.#c3 = e.clientX - this.#c1; 
+        this.#c4 = e.clientY - this.#c2;
+        
+        this.#clone.style.left = `${this.#c3}px`;
+        this.#clone.style.top = `${this.#c4}px`;
 
-        this.#c1 = this.#c3 - e.clientX;
-        this.#c2 = this.#c4 - e.clientY;
-        this.#c3 = e.clientX;
-        this.#c4 = e.clientY;
-
-        clone.style.top = `${clone.offsetTop - this.#c2}px`;
-        clone.style.left = `${clone.offsetLeft - this.#c1}px`;
+        if (this.onUpdate)
+            this.onUpdate(e.clientX, e.clientY, this.#clone);
     }
 
-    #released() {
+    #released(e) {
         document.removeEventListener("mousemove", this.#onMouseMove);
         document.removeEventListener("mouseup", this.#onMouseUp);
+
+        if (this.onRelease)  
+            this.onRelease(e.clientX, e.clientY);
     }
 
     connect() {

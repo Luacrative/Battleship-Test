@@ -68,6 +68,11 @@
     border-right: var(--grid-border-thickness) solid var(--grid-border-color);
 }
 
+.cell-selected { 
+    background-color: red;
+    opacity: 0.5;
+}
+
 #ship-options {
     width: 50%;
     margin-top: 20px;
