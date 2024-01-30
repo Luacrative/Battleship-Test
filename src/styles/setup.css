@@ -85,7 +85,7 @@
     flex-wrap: wrap;
 }
 
-#rotate-ship-container { 
+#rotate-ship { 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,10 +97,14 @@
     transform: translate(-50%, 0%);
 }
 
-#rotate-ship-text { 
+#rotate-text { 
     padding-right: 5px;
 }
 
-#rotate-ship-button { 
+#rotate-icon { 
     width: 30%;
+}
+
+.rotate-vertical { 
+    transform: rotate(90deg);
 }

@@ -75,20 +75,20 @@ const makeGrid = () => {
 }
 
 const makeShipOptions = () => {
-    const rotateContainer = document.createElement("button");
-    rotateContainer.setAttribute("id", "rotate-ship-container");
+    const rotateButton = document.createElement("button");
+    rotateButton.setAttribute("id", "rotate-ship");
 
-    const rotateButton = document.createElement("img");
-    rotateButton.setAttribute("src", "../assets/rotate-icon.png");
-    rotateButton.setAttribute("id", "rotate-ship-button");
-    rotateContainer.appendChild(rotateButton);
+    const rotateIcon = document.createElement("img");
+    rotateIcon.setAttribute("src", "../assets/rotate-icon.png");
+    rotateIcon.setAttribute("id", "rotate-icon");
+    rotateButton.appendChild(rotateIcon);
 
     const rotateText = document.createElement("h2");
-    rotateText.textContent = "Rotate ( - )";
-    rotateText.setAttribute("id", "rotate-ship-text");
-    rotateContainer.appendChild(rotateText);
+    rotateText.textContent = "Rotate (H)";
+    rotateText.setAttribute("id", "rotate-text");
+    rotateButton.appendChild(rotateText);
 
-    setup.appendChild(rotateContainer);
+    setup.appendChild(rotateButton);
 
     const shipOptions = document.createElement("div");
     shipOptions.setAttribute("id", "ship-options");
@@ -111,21 +111,24 @@ const makeShipOptions = () => {
 
     setup.appendChild(shipOptions);
 
-    return [rotateButton, ships];
+    return [rotateButton, rotateText, ships];
 }
 
 const start = () => {
-    const gridCells = makeGrid();
-
     const board = new Board();
-    const [rotateButton, ships] = makeShipOptions();
+    const gridCells = makeGrid();
+    const [rotateButton, rotateText, ships] = makeShipOptions();
+
+    const config = {
+        horizontal: true
+    };
 
     const selectedCells = [];
 
     ships.forEach(shipOption => {
         const { size } = shipOption;
 
-        const dragController = new Draggable(shipOption.image);
+        const dragController = new Draggable(shipOption.image, config);
         dragController.connect();
         dragController.setUpdateCallback(clone => {
             clone.hidden = true;
@@ -135,23 +138,37 @@ const start = () => {
                 let row = +cell.getAttribute("row");
                 let col = +cell.getAttribute("col");
 
-                if ((col + size) > GRID_SIZE)
+                if (config.horizontal && (col + size) > GRID_SIZE)
                     col = GRID_SIZE - size;
+                else if (!config.horizontal && (row + size) > GRID_SIZE)
+                    row = GRID_SIZE - size;
 
                 selectedCells.map(lastCell => {
                     lastCell.classList.remove("cell-selected");
                 });
 
-                for (let c = col; c < col + size; c++) {
-                    const adjCell = gridCells[row][c];
-                    adjCell.classList.add("cell-selected");
-                    selectedCells.push(adjCell);
-                }
+                if (config.horizontal)
+                    for (let c = col; c < col + size; c++) {
+                        const adjCell = gridCells[row][c];
+                        adjCell.classList.add("cell-selected");
+                        selectedCells.push(adjCell);
+                    }
+                else
+                    for (let r = row; r < row + size; r++) {
+                        const adjCell = gridCells[r][col];
+                        adjCell.classList.add("cell-selected");
+                        selectedCells.push(adjCell);
+                    }
             }
 
             clone.hidden = false;
         });
     });
+
+    rotateButton.addEventListener("click", () => {
+        config.horizontal = !config.horizontal;
+        rotateText.textContent = `Rotate (${(config.horizontal) ? "H" : "V"})`;
+    })
 };
 
 const end = () => {
