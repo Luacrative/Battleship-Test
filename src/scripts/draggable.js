@@ -1,4 +1,4 @@
-const X_OFFSET = 1;
+const X_OFFSET = 15;
 const Y_OFFSET = -25;
 
 class Draggable {
@@ -50,6 +50,8 @@ class Draggable {
 
         document.addEventListener("mousemove", this.#onMouseMove);
         document.addEventListener("mouseup", this.#onMouseUp);
+
+        this.image.classList.add("dragging");
     }
 
     #update(e) {
@@ -60,7 +62,7 @@ class Draggable {
         this.#clone.style.top = `${this.#c4}px`;
 
         if (this.onUpdate)
-            this.onUpdate(e.clientX, e.clientY, this.#clone);
+            this.onUpdate(this.#clone);
     }
 
     #released(e) {
@@ -69,6 +71,8 @@ class Draggable {
 
         if (this.onRelease)  
             this.onRelease(e.clientX, e.clientY);
+        
+        this.image.classList.remove("dragging");
     }
 
     connect() {

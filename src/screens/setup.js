@@ -4,6 +4,7 @@ import Board from "../scripts/board.js";
 import Draggable from "../scripts/draggable.js";
 
 const setup = document.querySelector("#setup");
+const GRID_SIZE = config.GRID_SIZE;
 
 const addCellBorders = (cell, isTop, isBot, isLeft, isRight) => {
     if (isTop)
@@ -18,14 +19,12 @@ const addCellBorders = (cell, isTop, isBot, isLeft, isRight) => {
 }
 
 const makeGrid = () => {
-    const size = config.GRID_SIZE;
-
     // Column ticks 
     const columnTicks = document.createElement("div");
     columnTicks.classList.add("column-ticks");
     setup.appendChild(columnTicks);
 
-    for (let c = 1; c <= size; c++) {
+    for (let c = 1; c <= GRID_SIZE; c++) {
         const tick = document.createElement("p");
         tick.classList.add("column-tick");
         tick.textContent = c;
@@ -43,7 +42,7 @@ const makeGrid = () => {
     rowTicks.classList.add("row-ticks");
     gridCenter.appendChild(rowTicks);
 
-    for (let r = 1; r <= size; r++) {
+    for (let r = 1; r <= GRID_SIZE; r++) {
         const tick = document.createElement("p");
         tick.classList.add("row-tick");
         tick.textContent = (r <= 26) ? alphabet[r - 1] : r + 26;
@@ -56,18 +55,23 @@ const makeGrid = () => {
     setupGrid.setAttribute("id", "setup-grid");
 
     // Make cells 
-    for (let r = 0; r < size; r++)
-        for (let c = 0; c < size; c++) {
+    const gridCells = Array.from({ length: GRID_SIZE }, _ => Array().fill(null));
+
+    for (let r = 0; r < GRID_SIZE; r++)
+        for (let c = 0; c < GRID_SIZE; c++) {
             const cell = document.createElement("div");
             cell.classList.add("grid-cell");
             cell.setAttribute("row", r);
             cell.setAttribute("col", c);
-            addCellBorders(cell, r == 0, r == size - 1, c == 0, c == size - 1);
+            addCellBorders(cell, r == 0, r == GRID_SIZE - 1, c == 0, c == GRID_SIZE - 1);
 
             setupGrid.appendChild(cell);
+            gridCells[r][c] = cell;
         }
 
     gridCenter.appendChild(setupGrid);
+
+    return gridCells;
 }
 
 const makeShipOptions = () => {
@@ -87,7 +91,7 @@ const makeShipOptions = () => {
         }
 
         shipOptions.appendChild(image);
-        ships.push(image);
+        ships.push({ image, size });
     }
 
     setup.appendChild(shipOptions);
@@ -96,23 +100,41 @@ const makeShipOptions = () => {
 }
 
 const start = () => {
-    makeGrid();
+    const gridCells = makeGrid();
 
     const board = new Board();
-    const shipOptions = makeShipOptions();
+    const ships = makeShipOptions();
 
-    shipOptions.forEach(shipOption => {
-        const dragController = new Draggable(shipOption);
+    const selectedCells = [];
+
+    ships.forEach(shipOption => {
+        const { size } = shipOption;
+
+        const dragController = new Draggable(shipOption.image);
         dragController.connect();
-        dragController.setUpdateCallback((mouseX, mouseY, clone) => { 
-            clone.hidden = true; 
+        dragController.setUpdateCallback(clone => {
+            clone.hidden = true;
 
-            const cell = mouse.target; 
-            if (cell.classList.contains("grid-cell")) { 
-                cell.classList.add("cell-selected");
+            const cell = mouse.target;
+            if (cell.classList.contains("grid-cell")) {
+                let row = +cell.getAttribute("row");
+                let col = +cell.getAttribute("col");
+
+                if ((col + size) > GRID_SIZE)
+                    col = GRID_SIZE - size;
+
+                selectedCells.map(lastCell => {
+                    lastCell.classList.remove("cell-selected");
+                });
+
+                for (let c = col; c < col + size; c++) {
+                    const adjCell = gridCells[row][c];
+                    adjCell.classList.add("cell-selected");
+                    selectedCells.push(adjCell);
+                }
             }
-            
-            clone.hidden = false; 
+
+            clone.hidden = false;
         });
     });
 };

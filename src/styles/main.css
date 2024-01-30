@@ -83,3 +83,7 @@ button:hover {
 .draggable { 
     position: absolute;
 }
+
+.dragging { 
+    opacity: 0.5;
+}
