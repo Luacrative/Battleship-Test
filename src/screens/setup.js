@@ -75,6 +75,21 @@ const makeGrid = () => {
 }
 
 const makeShipOptions = () => {
+    const rotateContainer = document.createElement("button");
+    rotateContainer.setAttribute("id", "rotate-ship-container");
+
+    const rotateButton = document.createElement("img");
+    rotateButton.setAttribute("src", "../assets/rotate-icon.png");
+    rotateButton.setAttribute("id", "rotate-ship-button");
+    rotateContainer.appendChild(rotateButton);
+
+    const rotateText = document.createElement("h2");
+    rotateText.textContent = "Rotate ( - )";
+    rotateText.setAttribute("id", "rotate-ship-text");
+    rotateContainer.appendChild(rotateText);
+
+    setup.appendChild(rotateContainer);
+
     const shipOptions = document.createElement("div");
     shipOptions.setAttribute("id", "ship-options");
 
@@ -96,14 +111,14 @@ const makeShipOptions = () => {
 
     setup.appendChild(shipOptions);
 
-    return ships;
+    return [rotateButton, ships];
 }
 
 const start = () => {
     const gridCells = makeGrid();
 
     const board = new Board();
-    const ships = makeShipOptions();
+    const [rotateButton, ships] = makeShipOptions();
 
     const selectedCells = [];
 

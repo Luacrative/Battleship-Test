@@ -84,3 +84,23 @@
     left: 0%;
     flex-wrap: wrap;
 }
+
+#rotate-ship-container { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    padding: 0 5px;
+
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+#rotate-ship-text { 
+    padding-right: 5px;
+}
+
+#rotate-ship-button { 
+    width: 30%;
+}
