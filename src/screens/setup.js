@@ -54,6 +54,11 @@ const makeGrid = () => {
     setupGrid.classList.add("grid");
     setupGrid.setAttribute("id", "setup-grid");
 
+    // Make ship layer 
+    const gridShips = document.createElement("div");
+    gridShips.classList.add("grid-ships");
+    setupGrid.appendChild(gridShips);
+
     // Make cells 
     const gridCells = Array.from({ length: GRID_SIZE }, _ => Array().fill(null));
 
@@ -71,7 +76,7 @@ const makeGrid = () => {
 
     gridCenter.appendChild(setupGrid);
 
-    return gridCells;
+    return [gridCells, gridShips];
 }
 
 const makeShipOptions = () => {
@@ -98,13 +103,7 @@ const makeShipOptions = () => {
     for (const [name, { size }] of Object.entries(config.SHIPS)) {
         const image = document.createElement("div");
         image.classList.add("ship-image");
-
-        for (let i = 0; i < size; i++) {
-            const segment = document.createElement("div");
-            segment.classList.add("ship-segment");
-            image.appendChild(segment);
-        }
-
+        image.style.width = `${size * 40}px`;
         shipOptions.appendChild(image);
         ships.push({ image, size, name });
     }
@@ -116,7 +115,7 @@ const makeShipOptions = () => {
 
 const start = () => {
     const board = new Board();
-    const gridCells = makeGrid();
+    const [gridCells, gridShips] = makeGrid();
     const [rotateButton, rotateText, ships] = makeShipOptions();
 
     const config = {
@@ -127,12 +126,10 @@ const start = () => {
 
     ships.forEach(shipOption => {
         const { size } = shipOption;
-        var startRow;
-        var startCol;
 
+        var startRow, startCol;
         var dragController = new Draggable(shipOption.image, config);
         dragController.connect();
-
         dragController.setUpdateCallback(clone => {
             clone.hidden = true;
 
@@ -146,9 +143,8 @@ const start = () => {
                 else if (!config.horizontal && (startRow + size) > GRID_SIZE)
                     startRow = GRID_SIZE - size;
 
-                selectedCells.map(lastCell => {
-                    lastCell.classList.remove("cell-selected");
-                });
+                selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
+                selectedCells.length = 0;
 
                 if (config.horizontal)
                     for (let col = startCol; col < startCol + size; col++) {
@@ -158,7 +154,7 @@ const start = () => {
                     }
                 else
                     for (let row = startRow; row < startRow + size; row++) {
-                        const adjCell = gridCells[startRow][startCol];
+                        const adjCell = gridCells[row][startCol];
                         adjCell.classList.add("cell-selected");
                         selectedCells.push(adjCell);
                     }
@@ -166,15 +162,24 @@ const start = () => {
 
             clone.hidden = false;
         });
-
         dragController.setReleaseCallback(() => {
+            selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
+            selectedCells.length = 0;
+
             const placed = board.placeShip(shipOption.name, startCol, startRow, config.horizontal);
-            if (!placed) return;
+            if (!placed) return false;
 
             dragController.disconnect();
             dragController = {};
 
-            shipOption.image.classList.add("dragging");
+            const clone = shipOption.image.cloneNode(true);
+            clone.classList.add("placed-ship");
+            clone.style.width = `${(50 * shipOption.size) - 5}px`;
+            clone.style.left = `${(50 * startCol) + 2}px`;
+            clone.style.top = `${(50 * startRow) + 3}px`;
+            gridShips.appendChild(clone);
+
+            return true;
         });
     });
 

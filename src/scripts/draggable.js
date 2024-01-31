@@ -89,10 +89,10 @@ class Draggable {
         this.#onMouseMove = undefined;
         this.#onMouseUp = undefined;
 
-        this.image.classList.remove("dragging");
+        if (this.onRelease && this.onRelease(e.clientX, e.clientY))
+            return;
 
-        if (this.onRelease)
-            this.onRelease(e.clientX, e.clientY);
+        this.image.classList.remove("dragging");
     }
 
     connect() {
@@ -116,7 +116,7 @@ class Draggable {
 
         if (this.#clone)
             this.#clone.remove();
-    }   
+    }
 }
 
 export default Draggable; 
