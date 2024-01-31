@@ -3,9 +3,7 @@ const X_OFFSET_VERTICAL = -50;
 const Y_OFFSET = -25;
 const Y_OFFSET_VERTICAL = 50;
 
-const clamp = (min, val, max) => { 
-    return Math.max(Math.min(val, max), min);
-};  
+const clamp = (min, val, max) => Math.max(Math.min(val, max), min);
 
 class Draggable {
     #c1 = 0;
@@ -13,6 +11,7 @@ class Draggable {
     #c3 = 0;
     #c4 = 0;
     #onMouseMove = undefined;
+    #onMouseDown = undefined;
     #onMouseUp = undefined;
     #clone = null;
 
@@ -74,7 +73,7 @@ class Draggable {
         this.#c4 = e.clientY - this.#c2;
 
         const clone = this.#clone;
-        const cloneWidth = clone.clientWidth + 20; 
+        const cloneWidth = clone.clientWidth + 20;
         const cloneHeight = clone.clientHeight + 50;
 
         clone.style.left = `${Math.min(this.#c3, document.body.clientWidth - cloneWidth)}px`;
@@ -87,19 +86,37 @@ class Draggable {
     #released(e) {
         document.removeEventListener("mousemove", this.#onMouseMove);
         document.removeEventListener("mouseup", this.#onMouseUp);
+        this.#onMouseMove = undefined;
+        this.#onMouseUp = undefined;
+
+        this.image.classList.remove("dragging");
 
         if (this.onRelease)
             this.onRelease(e.clientX, e.clientY);
-
-        this.image.classList.remove("dragging");
     }
 
     connect() {
-        this.image.addEventListener("mousedown", e => {
+        this.#onMouseDown = e => {
             e.preventDefault();
             this.#dragged(e)
-        });
+        };
+
+        this.image.addEventListener("mousedown", this.#onMouseDown);
     }
+
+    disconnect() {
+        if (this.#onMouseMove)
+            document.removeEventListener("mousemove", this.#onMouseMove);
+
+        if (this.#onMouseDown)
+            this.image.removeEventListener("mousedown", this.#onMouseDown);
+
+        if (this.#onMouseUp)
+            document.removeEventListener("mouseup", this.#onMouseUp);
+
+        if (this.#clone)
+            this.#clone.remove();
+    }   
 }
 
 export default Draggable; 

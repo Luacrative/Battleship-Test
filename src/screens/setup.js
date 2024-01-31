@@ -95,7 +95,7 @@ const makeShipOptions = () => {
 
     const ships = [];
 
-    for (const [ship, { size }] of Object.entries(config.SHIPS)) {
+    for (const [name, { size }] of Object.entries(config.SHIPS)) {
         const image = document.createElement("div");
         image.classList.add("ship-image");
 
@@ -106,7 +106,7 @@ const makeShipOptions = () => {
         }
 
         shipOptions.appendChild(image);
-        ships.push({ image, size });
+        ships.push({ image, size, name });
     }
 
     setup.appendChild(shipOptions);
@@ -127,41 +127,54 @@ const start = () => {
 
     ships.forEach(shipOption => {
         const { size } = shipOption;
+        var startRow;
+        var startCol;
 
-        const dragController = new Draggable(shipOption.image, config);
+        var dragController = new Draggable(shipOption.image, config);
         dragController.connect();
+
         dragController.setUpdateCallback(clone => {
             clone.hidden = true;
 
             const cell = mouse.target;
             if (cell.classList.contains("grid-cell")) {
-                let row = +cell.getAttribute("row");
-                let col = +cell.getAttribute("col");
+                startRow = +cell.getAttribute("row");
+                startCol = +cell.getAttribute("col");
 
-                if (config.horizontal && (col + size) > GRID_SIZE)
-                    col = GRID_SIZE - size;
-                else if (!config.horizontal && (row + size) > GRID_SIZE)
-                    row = GRID_SIZE - size;
+                if (config.horizontal && (startCol + size) > GRID_SIZE)
+                    startCol = GRID_SIZE - size;
+                else if (!config.horizontal && (startRow + size) > GRID_SIZE)
+                    startRow = GRID_SIZE - size;
 
                 selectedCells.map(lastCell => {
                     lastCell.classList.remove("cell-selected");
                 });
 
                 if (config.horizontal)
-                    for (let c = col; c < col + size; c++) {
-                        const adjCell = gridCells[row][c];
+                    for (let col = startCol; col < startCol + size; col++) {
+                        const adjCell = gridCells[startRow][col];
                         adjCell.classList.add("cell-selected");
                         selectedCells.push(adjCell);
                     }
                 else
-                    for (let r = row; r < row + size; r++) {
-                        const adjCell = gridCells[r][col];
+                    for (let row = startRow; row < startRow + size; row++) {
+                        const adjCell = gridCells[startRow][startCol];
                         adjCell.classList.add("cell-selected");
                         selectedCells.push(adjCell);
                     }
             }
 
             clone.hidden = false;
+        });
+
+        dragController.setReleaseCallback(() => {
+            const placed = board.placeShip(shipOption.name, startCol, startRow, config.horizontal);
+            if (!placed) return;
+
+            dragController.disconnect();
+            dragController = {};
+
+            shipOption.image.classList.add("dragging");
         });
     });
 
