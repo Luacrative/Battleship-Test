@@ -3,6 +3,10 @@ const X_OFFSET_VERTICAL = -50;
 const Y_OFFSET = -25;
 const Y_OFFSET_VERTICAL = 50;
 
+const clamp = (min, val, max) => { 
+    return Math.max(Math.min(val, max), min);
+};  
+
 class Draggable {
     #c1 = 0;
     #c2 = 0;
@@ -69,11 +73,15 @@ class Draggable {
         this.#c3 = e.clientX - this.#c1;
         this.#c4 = e.clientY - this.#c2;
 
-        this.#clone.style.left = `${this.#c3}px`;
-        this.#clone.style.top = `${this.#c4}px`;
+        const clone = this.#clone;
+        const cloneWidth = clone.clientWidth + 20; 
+        const cloneHeight = clone.clientHeight + 50;
+
+        clone.style.left = `${Math.min(this.#c3, document.body.clientWidth - cloneWidth)}px`;
+        clone.style.top = `${clamp(0, this.#c4, document.body.clientHeight - cloneHeight)}px`;
 
         if (this.onUpdate)
-            this.onUpdate(this.#clone);
+            this.onUpdate(clone);
     }
 
     #released(e) {
