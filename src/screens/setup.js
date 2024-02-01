@@ -170,7 +170,6 @@ const start = () => {
                 return false;
 
             const placed = board.placeShip(shipOption.name, startCol, startRow, config.horizontal);
-            console.log(placed);
             if (!placed) return false;
 
             dragController.disconnect();
@@ -178,9 +177,18 @@ const start = () => {
 
             const clone = shipOption.image.cloneNode(true);
             clone.classList.add("placed-ship");
-            clone.style.width = `${(50 * shipOption.size) - 5}px`;
-            clone.style.left = `${(50 * startCol) + 2}px`;
-            clone.style.top = `${(50 * startRow) + 3}px`;
+            
+            if (config.horizontal) {
+                clone.style.width = `${(50 * shipOption.size) - 5}px`;
+                clone.style.left = `${(50 * startCol) + 2}px`;
+                clone.style.top = `${(50 * startRow) + 3}px`;
+            } else { 
+                clone.style.width = "45px";
+                clone.style.height = `${(50 * shipOption.size) - 5}px`;
+                clone.style.left = `${(50 * startCol) + 2}px`;
+                clone.style.top = `${(50 * startRow) + 3}px`;
+            }
+            
             gridShips.appendChild(clone);
 
             return true;
