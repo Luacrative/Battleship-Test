@@ -2,9 +2,9 @@ import "./styles/main.css";
 import "./styles/setup.css";
 import "./styles/game.css";
 
-import setup from "./screens/setup.js";
+import menu from "./screens/menu.js";
 import mouse from "./scripts/mouse.js"; 
 
 document.addEventListener("mousemove", mouse.update);
 
-setup.start();
+menu.start(); 

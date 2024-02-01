@@ -177,18 +177,18 @@ const start = () => {
 
             const clone = shipOption.image.cloneNode(true);
             clone.classList.add("placed-ship");
-            
+
             if (config.horizontal) {
                 clone.style.width = `${(50 * shipOption.size) - 5}px`;
                 clone.style.left = `${(50 * startCol) + 2}px`;
                 clone.style.top = `${(50 * startRow) + 3}px`;
-            } else { 
+            } else {
                 clone.style.width = "45px";
                 clone.style.height = `${(50 * shipOption.size) - 5}px`;
                 clone.style.left = `${(50 * startCol) + 2}px`;
                 clone.style.top = `${(50 * startRow) + 3}px`;
             }
-            
+
             gridShips.appendChild(clone);
 
             return true;
@@ -199,6 +199,8 @@ const start = () => {
         config.horizontal = !config.horizontal;
         rotateText.textContent = `Rotate (${(config.horizontal) ? "H" : "V"})`;
     })
+
+    setup.classList.remove("hidden");
 };
 
 const end = () => {
