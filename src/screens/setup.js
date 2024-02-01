@@ -127,13 +127,13 @@ const start = () => {
     ships.forEach(shipOption => {
         const { size } = shipOption;
 
-        var startRow, startCol;
+        var startRow, startCol, cell;
         var dragController = new Draggable(shipOption.image, config);
         dragController.connect();
         dragController.setUpdateCallback(clone => {
             clone.hidden = true;
 
-            const cell = mouse.target;
+            cell = mouse.target;
             if (cell.classList.contains("grid-cell")) {
                 startRow = +cell.getAttribute("row");
                 startCol = +cell.getAttribute("col");
@@ -166,7 +166,11 @@ const start = () => {
             selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
             selectedCells.length = 0;
 
+            if (!cell.classList.contains("grid-cell"))
+                return false;
+
             const placed = board.placeShip(shipOption.name, startCol, startRow, config.horizontal);
+            console.log(placed);
             if (!placed) return false;
 
             dragController.disconnect();
