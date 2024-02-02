@@ -1,17 +1,14 @@
 import setup from "../screens/setup.js";
 
-const menu = document.querySelector("#menu"); 
+const menu = document.querySelector("#menu");
 
-const start = () => { 
+const start = () => {
     const startButton = document.querySelector("#start");
-    startButton.addEventListener("click", () => { 
+
+    startButton.addEventListener("click", () => {
         menu.classList.add("hidden");
-        setup.start() 
-    }); 
+        setup();
+    });
 };
 
-const end = () => { 
-
-};
-
-export default {start, end};
+export default start;

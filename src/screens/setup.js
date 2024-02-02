@@ -1,83 +1,12 @@
 import config from "../scripts/config.js";
 import mouse from "../scripts/mouse.js";
 import Board from "../scripts/board.js";
-import Draggable from "../scripts/draggable.js";
+import Draggable from "../scripts/draggable.js";    
+import game from "./game.js";
+import makeGrid from "../scripts/grid.js";
 
 const setup = document.querySelector("#setup");
 const GRID_SIZE = config.GRID_SIZE;
-
-const addCellBorders = (cell, isTop, isBot, isLeft, isRight) => {
-    if (isTop)
-        cell.classList.add("grid-cell-border-top");
-    else if (isBot)
-        cell.classList.add("grid-cell-border-bot");
-
-    if (isLeft)
-        cell.classList.add("grid-cell-border-left");
-    else if (isRight)
-        cell.classList.add("grid-cell-border-right");
-}
-
-const makeGrid = () => {
-    // Column ticks 
-    const columnTicks = document.createElement("div");
-    columnTicks.classList.add("column-ticks");
-    setup.appendChild(columnTicks);
-
-    for (let c = 1; c <= GRID_SIZE; c++) {
-        const tick = document.createElement("p");
-        tick.classList.add("column-tick");
-        tick.textContent = c;
-        columnTicks.appendChild(tick);
-    }
-
-    const gridCenter = document.createElement("div");
-    gridCenter.classList.add("grid-center");
-    setup.appendChild(gridCenter);
-
-    // Row ticks 
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    const rowTicks = document.createElement("div");
-    rowTicks.classList.add("row-ticks");
-    gridCenter.appendChild(rowTicks);
-
-    for (let r = 1; r <= GRID_SIZE; r++) {
-        const tick = document.createElement("p");
-        tick.classList.add("row-tick");
-        tick.textContent = (r <= 26) ? alphabet[r - 1] : r + 26;
-        rowTicks.appendChild(tick);
-    }
-
-    // Main grid 
-    const setupGrid = document.createElement("div");
-    setupGrid.classList.add("grid");
-    setupGrid.setAttribute("id", "setup-grid");
-
-    // Make ship layer 
-    const gridShips = document.createElement("div");
-    gridShips.classList.add("grid-ships");
-    setupGrid.appendChild(gridShips);
-
-    // Make cells 
-    const gridCells = Array.from({ length: GRID_SIZE }, _ => Array().fill(null));
-
-    for (let r = 0; r < GRID_SIZE; r++)
-        for (let c = 0; c < GRID_SIZE; c++) {
-            const cell = document.createElement("div");
-            cell.classList.add("grid-cell");
-            cell.setAttribute("row", r);
-            cell.setAttribute("col", c);
-            addCellBorders(cell, r == 0, r == GRID_SIZE - 1, c == 0, c == GRID_SIZE - 1);
-
-            setupGrid.appendChild(cell);
-            gridCells[r][c] = cell;
-        }
-
-    gridCenter.appendChild(setupGrid);
-
-    return [gridCells, gridShips];
-}
 
 const makeShipOptions = () => {
     const rotateButton = document.createElement("button");
@@ -115,8 +44,9 @@ const makeShipOptions = () => {
 
 const start = () => {
     const board = new Board();
-    const [gridCells, gridShips] = makeGrid();
+    const [gridCells, gridShips] = makeGrid(GRID_SIZE, setup);
     const [rotateButton, rotateText, ships] = makeShipOptions();
+    var shipsPlaced = 0; 
 
     const config = {
         horizontal: true
@@ -174,10 +104,10 @@ const start = () => {
 
             dragController.disconnect();
             dragController = {};
-
+            
             const clone = shipOption.image.cloneNode(true);
             clone.classList.add("placed-ship");
-
+            
             if (config.horizontal) {
                 clone.style.width = `${(50 * shipOption.size) - 5}px`;
                 clone.style.left = `${(50 * startCol) + 2}px`;
@@ -188,9 +118,12 @@ const start = () => {
                 clone.style.left = `${(50 * startCol) + 2}px`;
                 clone.style.top = `${(50 * startRow) + 3}px`;
             }
-
+            
             gridShips.appendChild(clone);
-
+            
+            if (++shipsPlaced == ships.length) 
+                startGame();
+            
             return true;
         });
     });
@@ -203,8 +136,10 @@ const start = () => {
     setup.classList.remove("hidden");
 };
 
-const end = () => {
-
+const startGame = () => {
+    setup.querySelectorAll("*").forEach(child => child.remove());
+    
+    game();
 };
 
-export default { start, end };
+export default start;
