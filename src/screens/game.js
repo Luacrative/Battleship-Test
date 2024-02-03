@@ -31,8 +31,21 @@ const makeDialogue = parent => {
     msg.classList.add("dialogue-msg");
     dialogue.appendChild(msg);
 
-    const setText = (title, text) => {
+    const setText = (title, text, speed) => {
         header.textContent = title;
+        msg.textContent = ""; 
+
+        const write = i => { 
+            if (i >= text.length)
+                return; 
+            
+            msg.textContent += text[i]; 
+
+            setTimeout(write, speed / text.length, i + 1);
+        }
+
+        write(0); 
+
         msg.textContent = text;
     }
 
@@ -57,7 +70,7 @@ const start = () => {
     var [gridCells2, gridShips2] = makeGrid(GRID_SIZE, grid2Container, true);
 
     const dialogue = makeDialogue(game);
-    dialogue.setText("General", DIALOGUES.start());
+    dialogue.setText("General", DIALOGUES.start(), 0.1);
 
     game.classList.remove("hidden");
 };
