@@ -2,6 +2,13 @@
     --ship-rounding: 10px;
 }
 
+#game { 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .ship-image {
     display: flex;
     justify-content: center;
@@ -146,4 +153,24 @@
 
 .turn-selected { 
     opacity: 1;
+}
+
+.dialogue-container { 
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    border: 2px solid white;
+    padding: 15px 15px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 80%;
+}
+
+.dialogue-header { 
+    padding: 0;
+    margin: 0;
+}
+
+.dialogue-msg { 
+    margin-bottom: 10px;
 }
