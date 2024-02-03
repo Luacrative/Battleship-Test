@@ -86,13 +86,13 @@ const start = () => {
     const [gridCells, gridShips] = makeGrid(GRID_SIZE, setup);
     const [shipOptions, rotateButton, rotateText] = makeShipOptions();
     const ships = makeShipImages(shipOptions);
-    var shipsPlaced = 0;
 
     const config = {
         horizontal: true
     };
 
     const selectedCells = [];
+    const shipsPlaced = [];
 
     ships.forEach(shipOption => {
         const size = shipOption.size;
@@ -137,9 +137,10 @@ const start = () => {
 
             const clone = cloneShipAt(shipOption, startCol, startRow, config.horizontal);
             gridShips.appendChild(clone);
-
-            if (++shipsPlaced == ships.length) 
-                startGame(); 
+            
+            shipsPlaced.push({...shipOption, startCol, startRow}); 
+            if (shipsPlaced.length == ships.length)
+                startGame(shipsPlaced); 
             
             return true;
         });
@@ -153,10 +154,10 @@ const start = () => {
     setup.classList.remove("hidden");
 };
 
-const startGame = () => {
+const startGame = shipsPlaced => {
     setup.querySelectorAll("*").forEach(child => child.remove());
 
-    game();
+    game(shipsPlaced);
 };
 
-export default start;
+export default start

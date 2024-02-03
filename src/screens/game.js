@@ -52,7 +52,9 @@ const makeDialogue = parent => {
     return { dialogue, setText };
 }
 
-const start = () => {
+const start = shipsPlaced => {
+    console.log(shipsPlaced);
+
     const gridsContainer = document.createElement("div");
     gridsContainer.classList.add("grids");
     game.appendChild(gridsContainer);
