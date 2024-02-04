@@ -100,7 +100,7 @@ const start = () => {
             grid.addShip(shipOption, startCol, startRow, horizontal);
 
             shipsPlaced.push({ shipOption, startCol, startRow, horizontal });
-            if (shipsPlaced.length == ships.length)
+            if (shipsPlaced.length === ships.length)
                 startGame(shipsPlaced);
 
             return true;

@@ -12,7 +12,7 @@ class Ship {
 
         this.health--;
 
-        if (this.health == 0)
+        if (this.health === 0)
             this.#sunk = true;
 
         return true;

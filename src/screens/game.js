@@ -1,6 +1,6 @@
 import config from "../scripts/config.js";
 import Grid from "../scripts/grid.js";
-import makeGrid from "../scripts/grid.js";
+import mouse from "../scripts/mouse.js";
 
 const GRID_SIZE = config.GRID_SIZE;
 const DIALOGUES = {
@@ -73,12 +73,28 @@ const start = shipsPlaced => {
     grid1.setShips(shipsPlaced);
 
     const grid2 = new Grid(GRID_SIZE, grid2Container, true);
+    grid2.nameCells("enemy-cell");
 
     // Set dialogue
     const dialogue = makeDialogue(game);
     dialogue.setText("General", DIALOGUES.start(), 0.02);
 
-    game.classList.remove("hidden");
+    // Cell selection
+    mouse.setFilter(selected => { 
+        if (selected.classList.contains("enemy-cell"))
+            return true; 
+        
+        grid2.deselectCells();
+
+        return false;
+    });
+
+    mouse.onHit = selected => { 
+        grid2.deselectCells();
+        grid2.selectCell(selected.getAttribute("col"), selected.getAttribute("row"));
+    }
+
+    game.classList.remove("hidden");    
 };
 
 export default start;

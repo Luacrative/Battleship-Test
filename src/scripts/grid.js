@@ -65,7 +65,7 @@ class Grid {
                 cell.classList.add("grid-cell");
                 cell.setAttribute("row", r);
                 cell.setAttribute("col", c);
-                addCellBorders(cell, r == 0, r == size - 1, c == 0, c == size - 1);
+                addCellBorders(cell, r === 0, r === size - 1, c === 0, c === size - 1);
 
                 this.grid.appendChild(cell);
                 this.#gridCells[r][c] = cell;
@@ -74,24 +74,32 @@ class Grid {
         gridCenter.appendChild(this.grid);
     }
 
+    nameCells(name) { 
+        this.#gridCells.forEach(row => { 
+            row.forEach(cell => { 
+                cell.classList.add(name);
+            });
+        });
+    }
+
     deselectCells() {
         this.selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
         this.selectedCells.length = 0;
     }
 
+    selectCell(col, row) { 
+        const cell = this.#gridCells[row][col];
+        cell.classList.add("cell-selected");
+        this.selectedCells.push(cell);
+    }
+
     selectCells(startCol, startRow, size, horizontal) {
         if (horizontal)
-            for (let col = startCol; col < startCol + size; col++) {
-                const adjCell = this.#gridCells[startRow][col];
-                adjCell.classList.add("cell-selected");
-                this.selectedCells.push(adjCell);
-            }
+            for (let col = startCol; col < startCol + size; col++) 
+                this.selectCell(col, startRow);
         else
-            for (let row = startRow; row < startRow + size; row++) {
-                const adjCell = this.#gridCells[row][startCol];
-                adjCell.classList.add("cell-selected");
-                this.selectedCells.push(adjCell);
-            }
+            for (let row = startRow; row < startRow + size; row++) 
+                this.selectCell(startCol, row);
     }
 
     addShip(shipOption, col, row, horizontal) {
