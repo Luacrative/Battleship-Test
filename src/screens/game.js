@@ -37,11 +37,10 @@ const makeDialogue = parent => {
         msg.textContent = ""; 
 
         const write = i => { 
-            if (i >= text.length)
+            if (i > text.length)
                 return; 
             
-            msg.textContent += text[i]; 
-
+            msg.textContent = text.substr(0, i);
             setTimeout(write, speed / text.length, i + 1);
         }
 
@@ -54,28 +53,30 @@ const makeDialogue = parent => {
 }
 
 const start = shipsPlaced => {
-    console.log(shipsPlaced);
-
+    // Make grid container
     const gridsContainer = document.createElement("div");
     gridsContainer.classList.add("grids");
     game.appendChild(gridsContainer);
 
     const grid1Container = document.createElement("div");
-    makeHeader("You", "blue", grid1Container).classList.add("turn-selected");
     gridsContainer.appendChild(grid1Container);
-
+    
     const grid2Container = document.createElement("div");
     grid2Container.classList.add("reverse");
-    makeHeader("Enemy", "red", grid2Container);
     gridsContainer.appendChild(grid2Container);
-
+    
+    makeHeader("You", "blue", grid1Container).classList.add("turn-selected");
+    makeHeader("Enemy", "red", grid2Container);
+    
+    // Make grids
     const grid1 = new Grid(GRID_SIZE, grid1Container);
     grid1.setShips(shipsPlaced);
 
     const grid2 = new Grid(GRID_SIZE, grid2Container, true);
 
+    // Set dialogue
     const dialogue = makeDialogue(game);
-    dialogue.setText("General", DIALOGUES.start(), 0.1);
+    dialogue.setText("General", DIALOGUES.start(), 0.02);
 
     game.classList.remove("hidden");
 };

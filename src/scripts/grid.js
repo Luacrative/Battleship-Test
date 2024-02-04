@@ -18,7 +18,7 @@ class Grid {
     gridShips;
     #gridCells;
 
-    constructor(size, parent, reverse) {
+    constructor(size, parent, reverse) {    
         // Column ticks 
         const columnTicks = document.createElement("div");
         columnTicks.classList.add("column-ticks");
@@ -116,8 +116,6 @@ class Grid {
 
     setShips(ships) { 
         ships.forEach(ship => { 
-            console.log(ship);
-            
             this.addShip(ship.shipOption, ship.startCol, ship.startRow, ship.horizontal);
         });
     }
