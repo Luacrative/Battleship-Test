@@ -1,4 +1,5 @@
 import config from "../scripts/config.js";
+import Grid from "../scripts/grid.js";
 import makeGrid from "../scripts/grid.js";
 
 const GRID_SIZE = config.GRID_SIZE;
@@ -68,8 +69,8 @@ const start = shipsPlaced => {
     makeHeader("Enemy", "red", grid2Container);
     gridsContainer.appendChild(grid2Container);
 
-    var [gridCells1, gridShips1] = makeGrid(GRID_SIZE, grid1Container);
-    var [gridCells2, gridShips2] = makeGrid(GRID_SIZE, grid2Container, true);
+    const grid1 = new Grid(GRID_SIZE, grid1Container);
+    const grid2 = new Grid(GRID_SIZE, grid2Container, true);
 
     const dialogue = makeDialogue(game);
     dialogue.setText("General", DIALOGUES.start(), 0.1);

@@ -2,8 +2,8 @@ import config from "../scripts/config.js";
 import mouse from "../scripts/mouse.js";
 import Board from "../scripts/board.js";
 import Draggable from "../scripts/draggable.js";
+import Grid from "../scripts/grid.js";
 import game from "./game.js";
-import makeGrid from "../scripts/grid.js";
 
 const setup = document.querySelector("#setup");
 const GRID_SIZE = config.GRID_SIZE;
@@ -45,45 +45,9 @@ const makeShipImages = shipOptions => {
     return ships;
 }
 
-const selectCells = (startCol, startRow, size, horizontal, gridCells, selectedCells) => {
-    selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
-    selectedCells.length = 0;
-
-    if (horizontal)
-        for (let col = startCol; col < startCol + size; col++) {
-            const adjCell = gridCells[startRow][col];
-            adjCell.classList.add("cell-selected");
-            selectedCells.push(adjCell);
-        }
-    else
-        for (let row = startRow; row < startRow + size; row++) {
-            const adjCell = gridCells[row][startCol];
-            adjCell.classList.add("cell-selected");
-            selectedCells.push(adjCell);
-        }
-}
-
-const cloneShipAt = (shipOption, col, row, horizontal) => {
-    const clone = shipOption.image.cloneNode(true);
-    clone.classList.add("placed-ship");
-
-    if (horizontal) {
-        clone.style.width = `${(50 * shipOption.size) - 5}px`;
-        clone.style.left = `${(50 * col) + 2}px`;
-        clone.style.top = `${(50 * row) + 3}px`;
-    } else {
-        clone.style.width = "45px";
-        clone.style.height = `${(50 * shipOption.size) - 5}px`;
-        clone.style.left = `${(50 * col) + 2}px`;
-        clone.style.top = `${(50 * row) + 3}px`;
-    }
-
-    return clone;
-}
-
 const start = () => {
     const board = new Board();
-    const [gridCells, gridShips] = makeGrid(GRID_SIZE, setup);
+    const grid = new Grid(GRID_SIZE, setup);
     const [shipOptions, rotateButton, rotateText] = makeShipOptions();
     const ships = makeShipImages(shipOptions);
 
@@ -91,7 +55,6 @@ const start = () => {
         horizontal: true
     };
 
-    const selectedCells = [];
     const shipsPlaced = [];
 
     ships.forEach(shipOption => {
@@ -113,18 +76,15 @@ const start = () => {
                 else if (!config.horizontal && (startRow + size) > GRID_SIZE)
                     startRow = GRID_SIZE - size;
 
-                selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
-                selectedCells.length = 0;
-
-                selectCells(startCol, startRow, size, config.horizontal, gridCells, selectedCells);
+                grid.deselectCells();
+                grid.selectCells(startCol, startRow, size, config.horizontal);
             }
 
             clone.hidden = false;
         });
-        
+
         dragController.setReleaseCallback(() => {
-            selectedCells.map(lastCell => lastCell.classList.remove("cell-selected"));
-            selectedCells.length = 0;
+            grid.deselectCells();
 
             if (!cell.classList.contains("grid-cell"))
                 return false;
@@ -135,13 +95,12 @@ const start = () => {
             dragController.disconnect();
             dragController = {};
 
-            const clone = cloneShipAt(shipOption, startCol, startRow, config.horizontal);
-            gridShips.appendChild(clone);
-            
-            shipsPlaced.push({...shipOption, startCol, startRow}); 
+            grid.addShip(shipOption, startCol, startRow, config.horizontal);
+
+            shipsPlaced.push({ ...shipOption, startCol, startRow });
             if (shipsPlaced.length == ships.length)
-                startGame(shipsPlaced); 
-            
+                startGame(shipsPlaced);
+
             return true;
         });
     });
