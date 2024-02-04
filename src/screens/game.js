@@ -70,6 +70,8 @@ const start = shipsPlaced => {
     gridsContainer.appendChild(grid2Container);
 
     const grid1 = new Grid(GRID_SIZE, grid1Container);
+    grid1.setShips(shipsPlaced);
+
     const grid2 = new Grid(GRID_SIZE, grid2Container, true);
 
     const dialogue = makeDialogue(game);

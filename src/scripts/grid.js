@@ -113,6 +113,14 @@ class Grid {
 
         return ship;
     }
+
+    setShips(ships) { 
+        ships.forEach(ship => { 
+            console.log(ship);
+            
+            this.addShip(ship.shipOption, ship.startCol, ship.startRow, ship.horizontal);
+        });
+    }
 }
 
 export default Grid;

@@ -89,15 +89,17 @@ const start = () => {
             if (!cell.classList.contains("grid-cell"))
                 return false;
 
-            const placed = board.placeShip(shipOption.name, startCol, startRow, config.horizontal);
+            const horizontal = config.horizontal;
+
+            const placed = board.placeShip(shipOption.name, startCol, startRow, horizontal);
             if (!placed) return false;
 
             dragController.disconnect();
             dragController = {};
 
-            grid.addShip(shipOption, startCol, startRow, config.horizontal);
+            grid.addShip(shipOption, startCol, startRow, horizontal);
 
-            shipsPlaced.push({ ...shipOption, startCol, startRow });
+            shipsPlaced.push({ shipOption, startCol, startRow, horizontal });
             if (shipsPlaced.length == ships.length)
                 startGame(shipsPlaced);
 
