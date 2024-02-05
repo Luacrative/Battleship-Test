@@ -1,5 +1,7 @@
 import config from "../scripts/config.js";
 import Grid from "../scripts/grid.js";
+import {Player, Bot} from "../scripts/player.js";
+import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
 
 const GRID_SIZE = config.GRID_SIZE;
@@ -34,17 +36,17 @@ const makeDialogue = parent => {
 
     const setText = (title, text, speed) => {
         header.textContent = title;
-        msg.textContent = ""; 
+        msg.textContent = "";
 
-        const write = i => { 
+        const write = i => {
             if (i > text.length)
-                return; 
-            
+                return;
+
             msg.textContent = text.substr(0, i);
             setTimeout(write, speed / text.length, i + 1);
         }
 
-        write(0); 
+        write(0);
 
         msg.textContent = text;
     }
@@ -52,7 +54,7 @@ const makeDialogue = parent => {
     return { dialogue, setText };
 }
 
-const start = shipsPlaced => {
+const makeUI = (shipsPlaced) => {
     // Make grid container
     const gridsContainer = document.createElement("div");
     gridsContainer.classList.add("grids");
@@ -60,14 +62,14 @@ const start = shipsPlaced => {
 
     const grid1Container = document.createElement("div");
     gridsContainer.appendChild(grid1Container);
-    
+
     const grid2Container = document.createElement("div");
     grid2Container.classList.add("reverse");
     gridsContainer.appendChild(grid2Container);
-    
+
     makeHeader("You", "blue", grid1Container).classList.add("turn-selected");
     makeHeader("Enemy", "red", grid2Container);
-    
+
     // Make grids
     const grid1 = new Grid(GRID_SIZE, grid1Container);
     grid1.setShips(shipsPlaced);
@@ -79,22 +81,32 @@ const start = shipsPlaced => {
     const dialogue = makeDialogue(game);
     dialogue.setText("General", DIALOGUES.start(), 0.02);
 
+    return { grid1, grid2, dialogue };
+}
+
+const start = (board1, shipsPlaced) => {
+    const UI = makeUI(shipsPlaced);
+
+    const player1 = new Player(board1);
+    const player2 = new Bot(new Board());
+    player2.placeShips();
+
     // Cell selection
-    mouse.setFilter(selected => { 
+    mouse.setFilter(selected => {
         if (selected.classList.contains("enemy-cell"))
-            return true; 
-        
-        grid2.deselectCells();
+            return true;
+
+        UI.grid2.deselectCells();
 
         return false;
     });
 
-    mouse.onHit = selected => { 
-        grid2.deselectCells();
-        grid2.selectCell(selected.getAttribute("col"), selected.getAttribute("row"));
+    mouse.onHit = selected => {
+        UI.grid2.deselectCells();
+        UI.grid2.selectCell(selected.getAttribute("col"), selected.getAttribute("row"));
     }
 
-    game.classList.remove("hidden");    
+    game.classList.remove("hidden");
 };
 
 export default start;

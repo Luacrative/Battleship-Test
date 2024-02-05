@@ -101,7 +101,7 @@ const start = () => {
 
             shipsPlaced.push({ shipOption, startCol, startRow, horizontal });
             if (shipsPlaced.length === ships.length)
-                startGame(shipsPlaced);
+                startGame(board, shipsPlaced);
 
             return true;
         });
@@ -115,10 +115,10 @@ const start = () => {
     setup.classList.remove("hidden");
 };
 
-const startGame = shipsPlaced => {
+const startGame = (board, shipsPlaced) => {
     setup.querySelectorAll("*").forEach(child => child.remove());
 
-    game(shipsPlaced);
+    game(board, shipsPlaced);
 };
 
 export default start

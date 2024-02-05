@@ -54,6 +54,9 @@ class Board {
         const shipId = this.#makeShip(shipName);
         const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd);
 
+        if (!placed)
+            this.#ships.pop();
+
         return placed;
     }
 
@@ -72,6 +75,10 @@ class Board {
         }
 
         return [true, ship != null, ship?.isSunk()];
+    }
+
+    getGrid() {
+        return this.#grid;
     }
 }
 

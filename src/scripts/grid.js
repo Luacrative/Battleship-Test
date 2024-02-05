@@ -24,10 +24,10 @@ class Grid {
         columnTicks.classList.add("column-ticks");
         parent.appendChild(columnTicks);
 
-        for (let c = 1; c <= size; c++) {
+        for (let col = 1; col <= size; col++) {
             const tick = document.createElement("p");
             tick.classList.add("column-tick");
-            tick.textContent = c;
+            tick.textContent = col;
             columnTicks.appendChild(tick);
         }
 
@@ -40,10 +40,10 @@ class Grid {
         rowTicks.classList.add("row-ticks");
         gridCenter.appendChild(rowTicks);
 
-        for (let r = 1; r <= size; r++) {
+        for (let row = 1; row <= size; row++) {
             const tick = document.createElement("p");
             tick.classList.add("row-tick");
-            tick.textContent = (r <= 26) ? alphabet[r - 1] : r + 26;
+            tick.textContent = (row <= 26) ? alphabet[row - 1] : row + 26;
             rowTicks.appendChild(tick);
         }
 
@@ -59,16 +59,16 @@ class Grid {
         // Make cells 
         this.#gridCells = Array.from({ length: size }, _ => Array().fill(null));
 
-        for (let r = 0; r < size; r++)
-            for (let c = 0; c < size; c++) {
+        for (let row = 0; row < size; row++)
+            for (let col = 0; col < size; col++) {
                 const cell = document.createElement("div");
                 cell.classList.add("grid-cell");
-                cell.setAttribute("row", r);
-                cell.setAttribute("col", c);
-                addCellBorders(cell, r === 0, r === size - 1, c === 0, c === size - 1);
+                cell.setAttribute("row", row);
+                cell.setAttribute("col", col);
+                addCellBorders(cell, row === 0, row === size - 1, col === 0, col === size - 1);
 
                 this.grid.appendChild(cell);
-                this.#gridCells[r][c] = cell;
+                this.#gridCells[row][col] = cell;
             }
 
         gridCenter.appendChild(this.grid);
