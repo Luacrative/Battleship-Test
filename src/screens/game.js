@@ -7,7 +7,7 @@ import mouse from "../scripts/mouse.js";
 const GRID_SIZE = config.GRID_SIZE;
 const DIALOGUES = {
     start: () => "Take the first shot when you're ready! We got this"
-}
+};
 
 const game = document.querySelector("#game");
 
@@ -19,7 +19,7 @@ const makeHeader = (text, color, parent) => {
     parent.appendChild(header);
 
     return header;
-}
+};
 
 const makeDialogue = parent => {
     const dialogue = document.createElement("div");
@@ -52,7 +52,7 @@ const makeDialogue = parent => {
     }
 
     return { dialogue, setText };
-}
+};
 
 const makeUI = (shipsPlaced) => {
     // Make grid container
@@ -82,14 +82,40 @@ const makeUI = (shipsPlaced) => {
     dialogue.setText("General", DIALOGUES.start(), 0.02);
 
     return { grid1, grid2, dialogue };
-}
+};
 
 const start = (board1, shipsPlaced) => {
     const UI = makeUI(shipsPlaced);
 
     const player1 = new Player(board1);
+    player1.onTurnEnd = () => {
+        mouse.disconnectClick();
+        player2.startTurn();
+    };
+    player1.startTurn = () => {
+        mouse.connectClick(() => {
+            const cell = mouse.target;
+            if (!mouse.filter(cell))
+                return;
+
+            const [hitShip, sunkShip] = player1.fireShot(player2.board, +cell.getAttribute("col"), +cell.getAttribute("row"));
+            if (hitShip) {
+                UI.grid2.setCellHit(cell);
+            } else {
+                UI.grid2.setCellMissed(cell);
+            }
+        });
+    };
+
+
     const player2 = new Bot(new Board());
     player2.placeShips();
+    player2.onTurnStart = () => {
+        player2.fireShot(player1.board.fireShot);
+    };
+    player2.onTurnEnd = () => {
+        player1.startTurn();
+    };
 
     // Cell selection
     mouse.setFilter(selected => {
@@ -106,23 +132,9 @@ const start = (board1, shipsPlaced) => {
         UI.grid2.selectCell(selected.getAttribute("col"), selected.getAttribute("row"));
     }
 
-    mouse.connectClick(() => {
-        const cell = mouse.target;
-        if (!mouse.filter(cell))
-            return;
-
-        const col = +cell.getAttribute("col");
-        const row = +cell.getAttribute("row");
-
-        const [success, hitShip, sunkShip] = player2.board.fireShot(col, row);
-        console.log({ success, hitShip, sunkShip });
-
-        if (success && hitShip) {
-            UI.grid2.setCellHit(cell);
-        }
-    });
-
+    // Initiate game 
     game.classList.remove("hidden");
+    player1.startTurn();
 };
 
 export default start;

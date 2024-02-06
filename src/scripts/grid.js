@@ -133,6 +133,12 @@ class Grid {
         hitCell.classList.add("hit-cell");
         cell.appendChild(hitCell);
     }
+
+    setCellMissed(cell) { 
+        const missCell = document.createElement("div");
+        missCell.classList.add("miss-cell");
+        cell.appendChild(missCell); 
+    }
 }
 
 export default Grid;

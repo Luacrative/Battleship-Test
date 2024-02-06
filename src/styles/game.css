@@ -84,11 +84,19 @@
     align-items: center;
 }
 
-.hit-cell {
+.hit-cell,
+.miss-cell {
     width: 30px;
     height: 30px;
     border-radius: 50px;
+}
+
+.hit-cell {
     border: 3px solid red;
+}
+
+.miss-cell {
+    border: 3px solid white;
 }
 
 .column-tick,

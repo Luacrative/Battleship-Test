@@ -18,7 +18,18 @@ class Player {
         if (this.onTurnEnd)
             this.onTurnEnd();
     }
+
+    fireShot(enemyBoard, col, row) {
+        const [success, hitShip, sunkShip] = enemyBoard.fireShot(col, row);
+        if (!success)
+            return;
+
+        this.endTurn();
+
+        return [hitShip, sunkShip];
+    }
 }
+
 class Bot extends Player {
     constructor(board) {
         super(board);
@@ -40,8 +51,9 @@ class Bot extends Player {
                     || this.board.placeShip(ship.name, +startCol, Math.min(startRow, GRID_SIZE - ship.size), false);
             }
         }
+    }
 
-        console.log(this.board.getGrid());
+    fireShot() {
     }
 }
 
