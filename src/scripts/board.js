@@ -4,7 +4,7 @@ import Ship from "./ship.js";
 class Grid {
     constructor(size) {
         this.cells = Array.from({ length: size }, _ => Array().fill(null));
-        this.cellsHit = Array.from({ length: size }, _ => Array().fill(false));
+        this.firedCells = new Set();
         this.size = size;
     }
 
@@ -19,6 +19,14 @@ class Grid {
                 this.cells[y][x] = value;
 
         return true;
+    }
+
+    wasFiredAt(x, y) {
+        return this.firedCells.has(`${x}#${y}`);
+    }
+
+    fire(x, y) {
+        this.firedCells.add(`${x}#${y}`);
     }
 }
 
@@ -64,15 +72,14 @@ class Board {
         if (x < 0 || y < 0 || x > this.#grid.size || y > this.#grid.size)
             throw new Error("Tried to fire out of bounds");
 
-        const cell = this.#grid.cells[y][x];
-        if (this.#grid.cellsHit[y][x])
+        if (this.#grid.wasFiredAt(x, y))
             return [false, false, false];
 
-        const ship = this.#ships[cell];
-        if (ship != null) {
+        this.#grid.fire(x, y);
+
+        const ship = this.#ships[this.#grid.cells[y][x]];
+        if (ship != null)
             ship.hit();
-            this.#grid.cellsHit[y][x] = true;
-        }
 
         return [true, ship != null, ship?.isSunk()];
     }

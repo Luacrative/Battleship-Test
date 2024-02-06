@@ -128,16 +128,10 @@ class Grid {
         });
     }
 
-    setCellHit(cell) {
-        const hitCell = document.createElement("div");
-        hitCell.classList.add("hit-cell");
-        cell.appendChild(hitCell);
-    }
-
-    setCellMissed(cell) {
-        const missCell = document.createElement("div");
-        missCell.classList.add("miss-cell");
-        cell.appendChild(missCell);
+    setCellStatus(cell, hit) {
+        const indicator = document.createElement("div");
+        indicator.classList.add(`${hit ? "hit" : "miss"}-cell`);
+        cell.appendChild(indicator);
     }
 
     getCellByColumnRow(col, row) {

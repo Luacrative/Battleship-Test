@@ -25,11 +25,13 @@ const mouse = {
     },
 
     connectClick: callback => {
+        mouse.onclick = callback;
         document.body.addEventListener("click", callback);
     },
 
     disconnectClick: () => {
         document.body.removeEventListener("click", mouse.onclick);
+        mouse.onclick = undefined;
     }
 }
 

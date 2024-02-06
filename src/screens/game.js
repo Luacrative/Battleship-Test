@@ -92,35 +92,27 @@ const start = (board1, shipsPlaced) => {
         mouse.disconnectClick();
         player2.startTurn();
     };
+
     player1.startTurn = () => {
         mouse.connectClick(() => {
             const cell = mouse.target;
-            if (!mouse.filter(cell))
-                return;
+            if (!mouse.filter(cell)) return;
 
-            const [hit, sunk] = player1.fireShot(player2.board, +cell.getAttribute("col"), +cell.getAttribute("row"));
+            player1.fireShot(player2.board, cell).onResult((success, hit, sunk) => {
+                if (!success) return;
 
-            if (hit)
-                UI.grid2.setCellHit(cell);
-            else
-                UI.grid2.setCellMissed(cell);
-
-            if (sunk) {
-
-            }
+                UI.grid2.setCellStatus(cell, hit);
+            });
         });
     };
 
     const player2 = new Bot(new Board());
     player2.placeShips();
     player2.onTurnStart = () => {
-        const [hit, sunk, col, row] = player2.fireShot((col, row) => player1.board.fireShot(col, row));
-        const cell = UI.grid1.getCellByColumnRow(col, row);
-
-        if (hit)
-            UI.grid1.setCellHit(cell);
-        else
-            UI.grid2.setCellMissed(cell);
+        player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
+            const cell = UI.grid1.getCellByColumnRow(col, row);
+            UI.grid1.setCellStatus(cell, hit);
+        });
     };
     player2.onTurnEnd = () => {
         player1.startTurn();
