@@ -54,7 +54,7 @@ const makeDialogue = parent => {
     return { dialogue, setText };
 };
 
-const makeUI = (shipsPlaced) => {
+const makeUI = shipsPlaced => {
     // Make grid container
     const gridsContainer = document.createElement("div");
     gridsContainer.classList.add("grids");
@@ -98,20 +98,29 @@ const start = (board1, shipsPlaced) => {
             if (!mouse.filter(cell))
                 return;
 
-            const [hitShip, sunkShip] = player1.fireShot(player2.board, +cell.getAttribute("col"), +cell.getAttribute("row"));
-            if (hitShip) {
+            const [hit, sunk] = player1.fireShot(player2.board, +cell.getAttribute("col"), +cell.getAttribute("row"));
+
+            if (hit)
                 UI.grid2.setCellHit(cell);
-            } else {
+            else
                 UI.grid2.setCellMissed(cell);
+
+            if (sunk) {
+
             }
         });
     };
 
-
     const player2 = new Bot(new Board());
     player2.placeShips();
     player2.onTurnStart = () => {
-        player2.fireShot(player1.board.fireShot);
+        const [hit, sunk, col, row] = player2.fireShot((col, row) => player1.board.fireShot(col, row));
+        const cell = UI.grid1.getCellByColumnRow(col, row);
+
+        if (hit)
+            UI.grid1.setCellHit(cell);
+        else
+            UI.grid2.setCellMissed(cell);
     };
     player2.onTurnEnd = () => {
         player1.startTurn();

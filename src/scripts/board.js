@@ -60,7 +60,7 @@ class Board {
         return placed;
     }
 
-    fireShot(x, y) { // -> [success, hitShip, sunkShip]
+    fireShot(x, y) {
         if (x < 0 || y < 0 || x > this.#grid.size || y > this.#grid.size)
             throw new Error("Tried to fire out of bounds");
 

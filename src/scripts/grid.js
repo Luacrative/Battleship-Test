@@ -134,10 +134,14 @@ class Grid {
         cell.appendChild(hitCell);
     }
 
-    setCellMissed(cell) { 
+    setCellMissed(cell) {
         const missCell = document.createElement("div");
         missCell.classList.add("miss-cell");
-        cell.appendChild(missCell); 
+        cell.appendChild(missCell);
+    }
+
+    getCellByColumnRow(col, row) {
+        return this.#gridCells[row][col];
     }
 }
 

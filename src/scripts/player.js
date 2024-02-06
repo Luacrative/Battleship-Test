@@ -20,17 +20,21 @@ class Player {
     }
 
     fireShot(enemyBoard, col, row) {
-        const [success, hitShip, sunkShip] = enemyBoard.fireShot(col, row);
+        const [success, hit, sunk] = enemyBoard.fireShot(col, row);
         if (!success)
             return;
 
         this.endTurn();
 
-        return [hitShip, sunkShip];
+        return [hit, sunk];
     }
 }
 
 class Bot extends Player {
+    #lastHit = [];
+    #directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    #nextDirection = 0;
+
     constructor(board) {
         super(board);
     }
@@ -53,7 +57,39 @@ class Bot extends Player {
         }
     }
 
-    fireShot() {
+    fireShot(callback) {
+        const tryFire = () => {
+            let col, row;
+
+            if (this.#lastHit.length === 0) {
+                col = Math.floor(Math.random() * 9);
+                row = Math.floor(Math.random() * 9);
+            } else {
+                col = this.#lastHit[0] + this.#directions[this.#nextDirection][0];
+                row = this.#lastHit[1] + this.#directions[this.#nextDirection][1];
+            }
+
+            const [success, hit, sunk] = callback(col, row);
+            if (!success)
+                return false;
+
+            if (sunk) {
+                this.#lastHit = [];
+                this.#nextDirection = 0;
+            } else if (hit)
+                this.#lastHit = [col, row];
+            else if (this.#lastHit.length > 0)
+                this.#nextDirection++;
+
+            return [success, hit, sunk, col, row];
+        };
+
+        var status;
+        do {
+            status = tryFire();
+        } while (!status[0]);
+
+        return status.slice(1);
     }
 }
 
