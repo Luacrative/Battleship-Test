@@ -86,7 +86,7 @@ const start = () => {
         dragController.setReleaseCallback(() => {
             grid.deselectCells();
 
-            if (!cell.classList.contains("grid-cell"))
+            if (!cell || !cell.classList.contains("grid-cell"))
                 return false;
 
             const horizontal = config.horizontal;
