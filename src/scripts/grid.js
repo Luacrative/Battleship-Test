@@ -18,7 +18,7 @@ class Grid {
     gridShips;
     #gridCells;
 
-    constructor(size, parent, reverse) {    
+    constructor(size, parent, reverse) {
         // Column ticks 
         const columnTicks = document.createElement("div");
         columnTicks.classList.add("column-ticks");
@@ -74,9 +74,9 @@ class Grid {
         gridCenter.appendChild(this.grid);
     }
 
-    nameCells(name) { 
-        this.#gridCells.forEach(row => { 
-            row.forEach(cell => { 
+    nameCells(name) {
+        this.#gridCells.forEach(row => {
+            row.forEach(cell => {
                 cell.classList.add(name);
             });
         });
@@ -87,7 +87,7 @@ class Grid {
         this.selectedCells.length = 0;
     }
 
-    selectCell(col, row) { 
+    selectCell(col, row) {
         const cell = this.#gridCells[row][col];
         cell.classList.add("cell-selected");
         this.selectedCells.push(cell);
@@ -95,10 +95,10 @@ class Grid {
 
     selectCells(startCol, startRow, size, horizontal) {
         if (horizontal)
-            for (let col = startCol; col < startCol + size; col++) 
+            for (let col = startCol; col < startCol + size; col++)
                 this.selectCell(col, startRow);
         else
-            for (let row = startRow; row < startRow + size; row++) 
+            for (let row = startRow; row < startRow + size; row++)
                 this.selectCell(startCol, row);
     }
 
@@ -122,10 +122,16 @@ class Grid {
         return ship;
     }
 
-    setShips(ships) { 
-        ships.forEach(ship => { 
+    setShips(ships) {
+        ships.forEach(ship => {
             this.addShip(ship.shipOption, ship.startCol, ship.startRow, ship.horizontal);
         });
+    }
+
+    setCellHit(cell) {
+        const hitCell = document.createElement("div");
+        hitCell.classList.add("hit-cell");
+        cell.appendChild(hitCell);
     }
 }
 

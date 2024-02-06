@@ -34,7 +34,7 @@ class Board {
     #makeShip(shipName) {
         const shipConfig = config.SHIPS[shipName]
 
-        const ship = new Ship({ shipConfig });
+        const ship = new Ship(shipConfig);
         this.#ships.push(ship);
 
         return this.#ships.length - 1;

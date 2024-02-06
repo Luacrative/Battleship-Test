@@ -1,6 +1,6 @@
 import config from "../scripts/config.js";
 import Grid from "../scripts/grid.js";
-import {Player, Bot} from "../scripts/player.js";
+import { Player, Bot } from "../scripts/player.js";
 import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
 
@@ -94,7 +94,7 @@ const start = (board1, shipsPlaced) => {
     // Cell selection
     mouse.setFilter(selected => {
         if (selected.classList.contains("enemy-cell"))
-            return true;
+            return !selected.querySelector(".hit-cell");
 
         UI.grid2.deselectCells();
 
@@ -105,6 +105,22 @@ const start = (board1, shipsPlaced) => {
         UI.grid2.deselectCells();
         UI.grid2.selectCell(selected.getAttribute("col"), selected.getAttribute("row"));
     }
+
+    mouse.connectClick(() => {
+        const cell = mouse.target;
+        if (!mouse.filter(cell))
+            return;
+
+        const col = +cell.getAttribute("col");
+        const row = +cell.getAttribute("row");
+
+        const [success, hitShip, sunkShip] = player2.board.fireShot(col, row);
+        console.log({ success, hitShip, sunkShip });
+
+        if (success && hitShip) {
+            UI.grid2.setCellHit(cell);
+        }
+    });
 
     game.classList.remove("hidden");
 };

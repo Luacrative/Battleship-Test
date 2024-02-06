@@ -2,7 +2,7 @@
     --ship-rounding: 10px;
 }
 
-#game { 
+#game {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -56,18 +56,19 @@
     position: relative;
 }
 
-.grid-center { 
+.grid-center {
     margin-left: -30px;
 }
 
-.grid-center, .grid-center-reverse {
+.grid-center,
+.grid-center-reverse {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 }
 
-.grid-center-reverse { 
+.grid-center-reverse {
     margin-left: 30px;
     flex-direction: row-reverse;
 }
@@ -75,6 +76,19 @@
 .grid-cell,
 .column-tick {
     width: 50px;
+}
+
+.grid-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hit-cell {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    border: 3px solid red;
 }
 
 .column-tick,
@@ -120,7 +134,7 @@
     z-index: -1;
 }
 
-.placed-ship { 
+.placed-ship {
     position: absolute;
     z-index: 2;
     opacity: 1;
@@ -133,7 +147,7 @@
     align-items: center;
 }
 
-.grid-header { 
+.grid-header {
     border-radius: 7px;
     width: 30%;
     padding: 15px 0px;
@@ -141,21 +155,21 @@
     margin-left: 5px;
 }
 
-.blue { 
+.blue {
     background-color: rgba(24, 182, 194, 0.75);
     opacity: 0.65;
 }
 
-.red { 
+.red {
     background-color: rgba(194, 24, 24, 0.75);
     opacity: 0.65;
 }
 
-.turn-selected { 
+.turn-selected {
     opacity: 1;
 }
 
-.dialogue-container { 
+.dialogue-container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     border: 2px solid white;
@@ -166,11 +180,11 @@
     width: 80%;
 }
 
-.dialogue-header { 
+.dialogue-header {
     padding: 0;
     margin: 0;
 }
 
-.dialogue-msg { 
+.dialogue-msg {
     margin-bottom: 10px;
 }
