@@ -6,7 +6,15 @@ import mouse from "../scripts/mouse.js";
 
 const GRID_SIZE = config.GRID_SIZE;
 const DIALOGUES = {
-    start: () => "Take the first shot when you're ready! We got this"
+    start: "Take the first shot when you're ready! We got this",
+
+    hit: "Nice one! Let's hit them like that again.",
+    sunk: "We sunk their battleship!",
+    miss: "That one missed. Keep trying.",
+
+    wasHit: "They just hit us!",
+    wasSunk: "We lost a ship!",
+    wasMissed: "Looks like they tried to hit us."
 };
 
 const game = document.querySelector("#game");
@@ -79,7 +87,7 @@ const makeUI = shipsPlaced => {
 
     // Set dialogue
     const dialogue = makeDialogue(game);
-    dialogue.setText("General", DIALOGUES.start(), 0.02);
+    dialogue.setText("General", DIALOGUES.start, 0.02);
 
     return { grid1, grid2, dialogue };
 };
@@ -90,7 +98,7 @@ const start = (board1, shipsPlaced) => {
     const player1 = new Player(board1);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
-        player2.startTurn();
+        setTimeout(() => { player2.startTurn() }, 1000);
     };
 
     player1.startTurn = () => {
@@ -102,6 +110,7 @@ const start = (board1, shipsPlaced) => {
                 if (!success) return;
 
                 UI.grid2.setCellStatus(cell, hit);
+                UI.dialogue.setText("General", (sunk) ? DIALOGUES.sunk : (hit) ? DIALOGUES.hit : DIALOGUES.miss, 0.02);
             });
         });
     };
@@ -112,6 +121,7 @@ const start = (board1, shipsPlaced) => {
         player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
             const cell = UI.grid1.getCellByColumnRow(col, row);
             UI.grid1.setCellStatus(cell, hit);
+            UI.dialogue.setText("General", (sunk) ? DIALOGUES.wasSunk : (hit) ? DIALOGUES.wasHit : DIALOGUES.wasMissed, 0.02);
         });
     };
     player2.onTurnEnd = () => {
