@@ -27,7 +27,17 @@ const makeHeader = (text, color, parent) => {
     header.classList.add(color);
     parent.appendChild(header);
 
-    return header;
+    var toggled = false;
+    const toggle = () => {
+        if (!toggled)
+            header.classList.add("turn-selected");
+        else
+            header.classList.remove("turn-selected");
+
+        toggled = !toggled;
+    };
+
+    return { header, toggle };
 };
 
 const makeDialogue = parent => {
@@ -76,8 +86,9 @@ const makeUI = shipsPlaced => {
     grid2Container.classList.add("reverse");
     gridsContainer.appendChild(grid2Container);
 
-    makeHeader("You", "blue", grid1Container).classList.add("turn-selected");
-    makeHeader("Enemy", "red", grid2Container);
+    // Make headers
+    const header1 = makeHeader("You", "blue", grid1Container)
+    const header2 = makeHeader("Enemy", "red", grid2Container);
 
     // Make grids
     const grid1 = new Grid(GRID_SIZE, grid1Container);
@@ -90,7 +101,7 @@ const makeUI = shipsPlaced => {
     const dialogue = makeDialogue(game);
     dialogue.setText("General", DIALOGUES.start, 0.02);
 
-    return { grid1, grid2, dialogue };
+    return { grid1, grid2, dialogue, header1, header2 };
 };
 
 const start = (board1, shipsPlaced) => {
@@ -99,10 +110,14 @@ const start = (board1, shipsPlaced) => {
     const player1 = new Player(board1);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
-        setTimeout(() => { player2.startTurn() }, (Math.random() * 500) + 500);
+        UI.header1.toggle();
+
+        player2.startTurn();
     };
 
     player1.startTurn = () => {
+        UI.header1.toggle();
+
         mouse.connectClick(() => {
             const cell = mouse.target;
             if (!mouse.filter(cell)) return;
@@ -124,13 +139,18 @@ const start = (board1, shipsPlaced) => {
     const player2 = new Bot(new Board());
     player2.placeShips();
     player2.onTurnStart = () => {
-        player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
-            const cell = UI.grid1.getCellByColumnRow(col, row);
-            UI.grid1.setCellStatus(cell, hit);
-            UI.dialogue.setText("General", (sunk) ? DIALOGUES.wasSunk : (hit) ? DIALOGUES.wasHit : DIALOGUES.wasMissed, 0.02);
-        });
+        UI.header2.toggle();
+
+        setTimeout(() => {
+            player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
+                const cell = UI.grid1.getCellByColumnRow(col, row);
+                UI.grid1.setCellStatus(cell, hit);
+                UI.dialogue.setText("General", (sunk) ? DIALOGUES.wasSunk : (hit) ? DIALOGUES.wasHit : DIALOGUES.wasMissed, 0.02);
+            });
+        }, Math.random() * 1000);
     };
     player2.onTurnEnd = () => {
+        UI.header2.toggle();
         player1.startTurn();
     };
 
