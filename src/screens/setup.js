@@ -4,6 +4,7 @@ import Board from "../scripts/board.js";
 import Draggable from "../scripts/draggable.js";
 import Grid from "../scripts/grid.js";
 import game from "./game.js";
+import { ShipData } from "../scripts/ship.js";
 
 const setup = document.querySelector("#setup");
 const GRID_SIZE = config.GRID_SIZE;
@@ -31,15 +32,13 @@ const makeShipOptions = () => {
     return [shipOptions, rotateButton, rotateText];
 }
 
-const makeShipImages = shipOptions => {
+const makeShips = shipOptions => {
     const ships = [];
 
     for (const [name, { size }] of Object.entries(config.SHIPS)) {
-        const image = document.createElement("div");
-        image.classList.add("ship-image");
-        image.style.width = `${size * 40}px`;
-        shipOptions.appendChild(image);
-        ships.push({ image, size, name });
+        const data = ShipData(name, size);
+        shipOptions.appendChild(data.image);
+        ships.push(data);
     }
 
     return ships;
@@ -49,7 +48,7 @@ const start = () => {
     const board = new Board();
     const grid = new Grid(GRID_SIZE, setup);
     const [shipOptions, rotateButton, rotateText] = makeShipOptions();
-    const ships = makeShipImages(shipOptions);
+    const ships = makeShips(shipOptions);
 
     const config = {
         horizontal: true

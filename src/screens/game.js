@@ -1,6 +1,7 @@
 import config from "../scripts/config.js";
 import Grid from "../scripts/grid.js";
 import { Player, Bot } from "../scripts/player.js";
+import { ShipData } from "../scripts/ship.js";
 import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
 
@@ -98,7 +99,7 @@ const start = (board1, shipsPlaced) => {
     const player1 = new Player(board1);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
-        setTimeout(() => { player2.startTurn() }, 1000);
+        setTimeout(() => { player2.startTurn() }, (Math.random() * 500) + 500);
     };
 
     player1.startTurn = () => {
@@ -106,11 +107,16 @@ const start = (board1, shipsPlaced) => {
             const cell = mouse.target;
             if (!mouse.filter(cell)) return;
 
-            player1.fireShot(player2.board, cell).onResult((success, hit, sunk) => {
+            player1.fireShot(player2.board, cell).onResult((success, hit, sunk, col, row) => {
                 if (!success) return;
 
                 UI.grid2.setCellStatus(cell, hit);
                 UI.dialogue.setText("General", (sunk) ? DIALOGUES.sunk : (hit) ? DIALOGUES.hit : DIALOGUES.miss, 0.02);
+
+                if (sunk) {
+                    const ship = player2.board.getShipAtCell(col, row);
+                    UI.grid2.addShip(ShipData(ship.name, ship.size), ship.pos.x, ship.pos.y, ship.horizontal);
+                }
             });
         });
     };

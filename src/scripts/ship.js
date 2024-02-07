@@ -1,9 +1,12 @@
+const SHIP_CELL_SIZE = 40;
 class Ship {
     #sunk = false;
 
-constructor({ length, health }) {
-        this.length = length;
+    constructor({ size, health, x, y, horizontal }) {
+        this.size = size;
         this.health = health;
+        this.pos = { x, y };
+        this.horizontal = horizontal;
     }
 
     hit() {
@@ -23,4 +26,12 @@ constructor({ length, health }) {
     }
 }
 
-export default Ship;
+const ShipData = (name, size) => {
+    const image = document.createElement("div");
+    image.classList.add("ship-image");
+    image.style.width = `${size * SHIP_CELL_SIZE}px`;
+
+    return { image, size, name };
+}
+
+export { Ship, ShipData };

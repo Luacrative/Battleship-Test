@@ -1,5 +1,5 @@
 import config from "./config.js";
-import Ship from "./ship.js";
+import { Ship } from "./ship.js";
 
 class Grid {
     constructor(size) {
@@ -39,10 +39,10 @@ class Board {
         this.#ships = [];
     }
 
-    #makeShip(shipName) {
-        const shipConfig = config.SHIPS[shipName]
+    #makeShip(name, x, y, horizontal) {
+        const shipConfig = config.SHIPS[name]
 
-        const ship = new Ship(shipConfig);
+        const ship = new Ship({ ...shipConfig, name, x, y, horizontal });
         this.#ships.push(ship);
 
         return this.#ships.length - 1;
@@ -59,7 +59,7 @@ class Board {
         if (xEnd > 10 || yEnd > 10)
             return false;
 
-        const shipId = this.#makeShip(shipName);
+        const shipId = this.#makeShip(shipName, xStart, yStart, horizontal);
         const placed = this.#grid.setCells(shipId, xStart, xEnd, yStart, yEnd);
 
         if (!placed)
@@ -77,15 +77,15 @@ class Board {
 
         this.#grid.fire(x, y);
 
-        const ship = this.#ships[this.#grid.cells[y][x]];
+        const ship = this.getShipAtCell(x, y);
         if (ship != null)
             ship.hit();
 
         return [true, ship != null, ship?.isSunk()];
     }
 
-    getGrid() {
-        return this.#grid;
+    getShipAtCell(x, y) {
+        return this.#ships[this.#grid.cells[y][x]];
     }
 }
 

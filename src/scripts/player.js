@@ -27,7 +27,7 @@ class Player {
         if (success)
             this.endTurn();
 
-        return { onResult: (callback) => callback(...[success, hit, sunk]) };
+        return { onResult: (callback) => callback(...[success, hit, sunk, col, row]) };
     }
 }
 
