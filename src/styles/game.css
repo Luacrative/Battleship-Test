@@ -84,19 +84,30 @@
     align-items: center;
 }
 
-.hit-cell,
-.miss-cell {
+.status-circle {
     width: 30px;
     height: 30px;
     border-radius: 50px;
+    border: 3px solid;
+    transform: scale(0);
+    opacity: 1;
+
+    animation: show 50ms 10ms linear forwards;
 }
 
-.hit-cell {
-    border: 3px solid red;
+.status-hit {
+    border-color: red;
 }
 
-.miss-cell {
-    border: 3px solid white;
+.status-miss {
+    border-color: white;
+}
+
+@keyframes show {
+    100% {
+        opacity: 1;
+        transform: scale(0.8);
+    }
 }
 
 .column-tick,

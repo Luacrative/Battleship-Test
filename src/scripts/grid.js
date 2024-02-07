@@ -129,9 +129,10 @@ class Grid {
     }
 
     setCellStatus(cell, hit) {
-        const indicator = document.createElement("div");
-        indicator.classList.add(`${hit ? "hit" : "miss"}-cell`);
-        cell.appendChild(indicator);
+        const circle = document.createElement("div");
+        circle.classList.add("status-circle");
+        circle.classList.add(`status-${hit ? "hit" : "miss"}`);
+        cell.appendChild(circle);
     }
 
     getCellByColumnRow(col, row) {
