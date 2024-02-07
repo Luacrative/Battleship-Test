@@ -3,10 +3,13 @@ import config from "./config.js";
 const GRID_SIZE = config.GRID_SIZE;
 
 class Player {
-    constructor(board) {
+    #shipsAlive = 0;
+
+    constructor(board, totalShips) {
         this.onTurnStart = undefined;
         this.onTurnEnd = undefined;
         this.board = board;
+        this.#shipsAlive = totalShips;
     }
 
     startTurn() {
@@ -28,6 +31,14 @@ class Player {
             this.endTurn();
 
         return { onResult: (callback) => callback(...[success, hit, sunk, col, row]) };
+    }
+
+    shipSunk() {
+        this.#shipsAlive--;
+    }
+
+    alive() { 
+        return this.#shipsAlive > 0;
     }
 }
 

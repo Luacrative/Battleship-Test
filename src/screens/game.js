@@ -5,6 +5,8 @@ import { ShipData } from "../scripts/ship.js";
 import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
 
+const MAX_ATTACK_TIME = 1000;
+const MIN_ATTACK_TIME = 500;
 const GRID_SIZE = config.GRID_SIZE;
 const DIALOGUES = {
     start: "Take the first shot when you're ready! We got this",
@@ -107,7 +109,8 @@ const makeUI = shipsPlaced => {
 const start = (board1, shipsPlaced) => {
     const UI = makeUI(shipsPlaced);
 
-    const player1 = new Player(board1);
+    // Add players
+    const player1 = new Player(board1, config.SHIPS.length);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
         UI.header1.toggle();
@@ -131,12 +134,17 @@ const start = (board1, shipsPlaced) => {
                 if (sunk) {
                     const ship = player2.board.getShipAtCell(col, row);
                     UI.grid2.addShip(ShipData(ship.name, ship.size), ship.pos.x, ship.pos.y, ship.horizontal);
+
+                    player2.shipSunk();
+
+                    if (!player2.alive())
+                        console.log("Player1 won!");
                 }
             });
         });
     };
 
-    const player2 = new Bot(new Board());
+    const player2 = new Bot(new Board(), config.SHIPS.length);
     player2.placeShips();
     player2.onTurnStart = () => {
         UI.header2.toggle();
@@ -146,8 +154,16 @@ const start = (board1, shipsPlaced) => {
                 const cell = UI.grid1.getCellByColumnRow(col, row);
                 UI.grid1.setCellStatus(cell, hit);
                 UI.dialogue.setText("General", (sunk) ? DIALOGUES.wasSunk : (hit) ? DIALOGUES.wasHit : DIALOGUES.wasMissed, 0.02);
+
+                if (sunk) {
+                    player1.shipSunk();
+
+                    if (!player1.alive()) {
+                        console.log("Player2 won!");
+                    }
+                }
             });
-        }, Math.random() * 1000);
+        }, (Math.random() * (MAX_ATTACK_TIME - MIN_ATTACK_TIME)) + MIN_ATTACK_TIME);
     };
     player2.onTurnEnd = () => {
         UI.header2.toggle();
