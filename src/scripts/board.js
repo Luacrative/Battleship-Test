@@ -56,7 +56,7 @@ class Board {
         const xEnd = horizontal ? (xStart + size) : (xStart + 1);
         const yEnd = horizontal ? (yStart + 1) : (yStart + size);
 
-        if (xEnd > 10 || yEnd > 10)
+        if (xEnd > config.GRID_SIZE || yEnd > config.GRID_SIZE)
             return false;
 
         const shipId = this.#makeShip(shipName, xStart, yStart, horizontal);
