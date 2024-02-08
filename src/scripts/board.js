@@ -70,9 +70,8 @@ class Board {
 
     fireShot(x, y) {
         if (x < 0 || y < 0 || x >= this.#grid.size || y >= this.#grid.size)
-            throw new Error("Tried to fire out of bounds");
-
-        if (this.#grid.wasFiredAt(x, y))
+            return [false, false, false];
+        else if (this.#grid.wasFiredAt(x, y))
             return [false, false, false];
 
         this.#grid.fire(x, y);

@@ -116,6 +116,7 @@ const start = () => {
 
 const startGame = (board, shipsPlaced) => {
     setup.querySelectorAll("*").forEach(child => child.remove());
+    setup.classList.add("hidden");
 
     game(board, shipsPlaced);
 };

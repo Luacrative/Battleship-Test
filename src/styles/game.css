@@ -7,6 +7,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    transition: filter 1s;
+}
+
+#game-result {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%) scale(0);
+    font-size: 5rem;
+    opacity: 0;
+    
+    animation: game-result 500ms 400ms linear forwards;
+}
+
+.blur-out {
+    filter: blur(2px);
 }
 
 .ship-image {
@@ -92,7 +108,7 @@
     transform: scale(0);
     opacity: 1;
 
-    animation: show 50ms 10ms linear forwards;
+    animation: status-circle 50ms 10ms linear forwards;
 }
 
 .status-hit {
@@ -101,13 +117,6 @@
 
 .status-miss {
     border-color: white;
-}
-
-@keyframes show {
-    100% {
-        opacity: 1;
-        transform: scale(0.8);
-    }
 }
 
 .column-tick,
@@ -206,4 +215,18 @@
 
 .dialogue-msg {
     margin-bottom: 10px;
+}
+
+@keyframes status-circle {
+    100% {
+        opacity: 1;
+        transform: scale(0.8);
+    }
+}
+
+@keyframes game-result {
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0%) scale(1);
+    }
 }

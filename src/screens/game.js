@@ -4,6 +4,7 @@ import { Player, Bot } from "../scripts/player.js";
 import { ShipData } from "../scripts/ship.js";
 import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
+import menu from "./menu.js";
 
 const DIALOGUES = {
     start: "Take the first shot when you're ready! We got this",
@@ -17,6 +18,7 @@ const DIALOGUES = {
     wasMissed: "Looks like they tried to hit us."
 };
 
+const container = document.querySelector("#container");
 const game = document.querySelector("#game");
 
 const makeHeader = (text, color, parent) => {
@@ -103,26 +105,31 @@ const makeUI = shipsPlaced => {
     return { grid1, grid2, dialogue, header1, header2 };
 };
 
-const gameOver = (result, UI) => {
-    mouse.onHit = undefined;
-    mouse.setFilter(undefined);
-    mouse.disconnectClick();
+const gameOver = result => {
+    game.classList.add("blur-out");
 
-    UI.grid1.deselectCells();
-    UI.grid2.deselectCells();
+    const gameResult = document.createElement("h1");
+    gameResult.textContent = result;
+    gameResult.setAttribute("id", "game-result");
+    gameResult.classList.add("text-shadow");
+    container.appendChild(gameResult);
 
-    for (const property in UI)
-        delete UI[property];
+    // Return to menu
+    setTimeout(() => {
+        game.classList.remove("blur-out");
+        gameResult.remove();
+        game.querySelectorAll("*").forEach(child => child.remove());
 
-    console.log("Game over!");
+        menu();
+    }, 2000);
 };
 
 const start = (board1, shipsPlaced) => {
-    const UI = makeUI(shipsPlaced);
+    var UI = makeUI(shipsPlaced);
     const numShips = Object.keys(config.SHIPS).length;
 
     // Add players
-    const player1 = new Player(board1, numShips);
+    var player1 = new Player(board1, numShips);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
         UI.header1.toggle();
@@ -150,13 +157,13 @@ const start = (board1, shipsPlaced) => {
                     player2.shipSunk();
 
                     if (!player2.alive())
-                        gameOver("Victory", UI);
+                        endGame(true);
                 }
             });
         });
     };
 
-    const player2 = new Bot(new Board(), numShips);
+    var player2 = new Bot(new Board(), numShips);
     player2.placeShips();
     player2.onTurnStart = () => {
         UI.header2.toggle();
@@ -176,7 +183,7 @@ const start = (board1, shipsPlaced) => {
                     player1.shipSunk();
 
                     if (!player1.alive())
-                        gameOver("Defeat", UI);
+                        endGame(false);
                 }
             }, 250);
         }, delay);
@@ -189,7 +196,7 @@ const start = (board1, shipsPlaced) => {
     // Cell selection
     mouse.setFilter(selected => {
         if (selected.classList.contains("enemy-cell"))
-            return !selected.querySelector(".hit-cell");
+            return !selected.querySelector(".status-circle");
 
         UI.grid2.deselectCells();
 
@@ -204,6 +211,21 @@ const start = (board1, shipsPlaced) => {
     // Initiate game 
     game.classList.remove("hidden");
     player1.startTurn();
+    
+    const endGame = isWinner => {
+        mouse.onHit = undefined;
+        mouse.setFilter(undefined);
+        mouse.disconnectClick();
+
+        UI.grid1.deselectCells();
+        UI.grid2.deselectCells();
+
+        UI = {};
+        player1 = {};
+        player2 = {};
+
+        gameOver(isWinner ? "Victory" : "Defeat");
+    };
 };
 
 export default start;
