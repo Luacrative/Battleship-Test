@@ -1,7 +1,5 @@
 import config from "./config.js";
 
-const GRID_SIZE = config.GRID_SIZE;
-
 class Player {
     constructor(board, totalShips) {
         this.onTurnStart = undefined;
@@ -64,8 +62,8 @@ class Bot extends Player {
                 const startRow = Math.floor(Math.random() * 9);
                 const startCol = Math.floor(Math.random() * 9);
 
-                placed = this.board.placeShip(ship.name, Math.min(startCol, GRID_SIZE - ship.size), +startRow, true)
-                    || this.board.placeShip(ship.name, +startCol, Math.min(startRow, GRID_SIZE - ship.size), false);
+                placed = this.board.placeShip(ship.name, Math.min(startCol, config.GRID_SIZE - ship.size), +startRow, true)
+                    || this.board.placeShip(ship.name, +startCol, Math.min(startRow, config.GRID_SIZE - ship.size), false);
             }
         }
     }

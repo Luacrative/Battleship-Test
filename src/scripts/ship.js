@@ -1,4 +1,5 @@
-const SHIP_CELL_SIZE = 40;
+import config from "./config.js";
+
 class Ship {
     #sunk = false;
 
@@ -29,7 +30,7 @@ class Ship {
 const ShipData = (name, size) => {
     const image = document.createElement("div");
     image.classList.add("ship-image");
-    image.style.width = `${size * SHIP_CELL_SIZE}px`;
+    image.style.width = `${size * config.SHIP_CELL_SIZE}px`;
 
     return { image, size, name };
 }

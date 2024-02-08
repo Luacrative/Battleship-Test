@@ -8,5 +8,6 @@ export default {
     },
 
     GRID_SIZE: 10,
+    SHIP_CELL_SIZE: 40,
     BOT_ATTACK_TIME: [300, 500]
 }
