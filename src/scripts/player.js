@@ -37,7 +37,7 @@ class Player {
         this.#shipsAlive--;
     }
 
-    alive() { 
+    alive() {
         return this.#shipsAlive > 0;
     }
 }

@@ -108,9 +108,10 @@ const makeUI = shipsPlaced => {
 
 const start = (board1, shipsPlaced) => {
     const UI = makeUI(shipsPlaced);
+    const numShips = Object.keys(config.SHIPS).length;
 
     // Add players
-    const player1 = new Player(board1, config.SHIPS.length);
+    const player1 = new Player(board1, numShips);
     player1.onTurnEnd = () => {
         mouse.disconnectClick();
         UI.header1.toggle();
@@ -144,7 +145,7 @@ const start = (board1, shipsPlaced) => {
         });
     };
 
-    const player2 = new Bot(new Board(), config.SHIPS.length);
+    const player2 = new Bot(new Board(), numShips);
     player2.placeShips();
     player2.onTurnStart = () => {
         UI.header2.toggle();
