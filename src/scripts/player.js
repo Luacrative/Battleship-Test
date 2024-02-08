@@ -23,6 +23,9 @@ class Player {
     }
 
     fireShot(enemyBoard, cell) {
+        if (!this.alive())
+            return;
+
         const col = +cell.getAttribute("col");
         const row = +cell.getAttribute("row");
 
@@ -70,6 +73,9 @@ class Bot extends Player {
     }
 
     fireShot(callback) {
+        if (!this.alive())
+            return;
+
         const tryFire = () => {
             let hitLastShot = this.#lastHit.length > 0;
             let col, row;
