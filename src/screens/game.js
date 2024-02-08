@@ -5,9 +5,6 @@ import { ShipData } from "../scripts/ship.js";
 import Board from "../scripts/board.js";
 import mouse from "../scripts/mouse.js";
 
-const MAX_ATTACK_TIME = 1000;
-const MIN_ATTACK_TIME = 500;
-const GRID_SIZE = config.GRID_SIZE;
 const DIALOGUES = {
     start: "Take the first shot when you're ready! We got this",
 
@@ -93,10 +90,10 @@ const makeUI = shipsPlaced => {
     const header2 = makeHeader("Enemy", "red", grid2Container);
 
     // Make grids
-    const grid1 = new Grid(GRID_SIZE, grid1Container);
+    const grid1 = new Grid(config.GRID_SIZE, grid1Container);
     grid1.setShips(shipsPlaced);
 
-    const grid2 = new Grid(GRID_SIZE, grid2Container, true);
+    const grid2 = new Grid(config.GRID_SIZE, grid2Container, true);
     grid2.nameCells("enemy-cell");
 
     // Set dialogue
@@ -104,6 +101,20 @@ const makeUI = shipsPlaced => {
     dialogue.setText("General", DIALOGUES.start, 0.02);
 
     return { grid1, grid2, dialogue, header1, header2 };
+};
+
+const gameOver = (result, UI) => {
+    mouse.onHit = undefined;
+    mouse.setFilter(undefined);
+    mouse.disconnectClick();
+
+    UI.grid1.deselectCells();
+    UI.grid2.deselectCells();
+
+    for (const property in UI)
+        delete UI[property];
+
+    console.log("Game over!");
 };
 
 const start = (board1, shipsPlaced) => {
@@ -139,7 +150,7 @@ const start = (board1, shipsPlaced) => {
                     player2.shipSunk();
 
                     if (!player2.alive())
-                        console.log("Player1 won!");
+                        gameOver("Victory", UI);
                 }
             });
         });
@@ -150,21 +161,25 @@ const start = (board1, shipsPlaced) => {
     player2.onTurnStart = () => {
         UI.header2.toggle();
 
-        setTimeout(() => {
-            player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
+        const delay = (Math.random() * (config.BOT_ATTACK_TIME[1] - config.BOT_ATTACK_TIME[0])) + config.BOT_ATTACK_TIME[0];
+        player2.fireShot((col, row) => player1.board.fireShot(col, row)).onResult((hit, sunk, col, row) => {
+            UI.grid1.selectCell(col, row);
+
+            setTimeout(() => {
                 const cell = UI.grid1.getCellByColumnRow(col, row);
                 UI.grid1.setCellStatus(cell, hit);
+                UI.grid1.deselectCells();
+
                 UI.dialogue.setText("General", (sunk) ? DIALOGUES.wasSunk : (hit) ? DIALOGUES.wasHit : DIALOGUES.wasMissed, 0.02);
 
                 if (sunk) {
                     player1.shipSunk();
 
-                    if (!player1.alive()) {
-                        console.log("Player2 won!");
-                    }
+                    if (!player1.alive())
+                        gameOver("Defeat", UI);
                 }
-            });
-        }, (Math.random() * (MAX_ATTACK_TIME - MIN_ATTACK_TIME)) + MIN_ATTACK_TIME);
+            }, 250);
+        }, delay);
     };
     player2.onTurnEnd = () => {
         UI.header2.toggle();

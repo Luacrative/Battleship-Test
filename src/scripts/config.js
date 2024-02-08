@@ -7,5 +7,6 @@ export default {
         "Cruiser": { size: 2, health: 2 }
     },
 
-    GRID_SIZE: 10
+    GRID_SIZE: 10,
+    BOT_ATTACK_TIME: [300, 500]
 }

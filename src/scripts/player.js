@@ -3,13 +3,11 @@ import config from "./config.js";
 const GRID_SIZE = config.GRID_SIZE;
 
 class Player {
-    #shipsAlive = 0;
-
     constructor(board, totalShips) {
         this.onTurnStart = undefined;
         this.onTurnEnd = undefined;
         this.board = board;
-        this.#shipsAlive = totalShips;
+        this.shipsAlive = totalShips;
     }
 
     startTurn() {
@@ -33,15 +31,15 @@ class Player {
         if (success)
             this.endTurn();
 
-        return { onResult: (callback) => callback(...[success, hit, sunk, col, row]) };
+        return { onResult: callback => callback(...[success, hit, sunk, col, row]) };
     }
 
     shipSunk() {
-        this.#shipsAlive--;
+        this.shipsAlive--;
     }
 
     alive() {
-        return this.#shipsAlive > 0;
+        return this.shipsAlive > 0;
     }
 }
 
@@ -50,8 +48,8 @@ class Bot extends Player {
     #directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     #nextDirection = 0;
 
-    constructor(board) {
-        super(board);
+    constructor(board, totalShips) {
+        super(board, totalShips);
     }
 
     placeShips() {
@@ -119,7 +117,11 @@ class Bot extends Player {
 
         this.endTurn();
 
-        return { onResult: (callback) => callback(...status.slice(1)) };
+        return {
+            onResult: (callback, delay) => {
+                setTimeout(callback, delay, ...status.slice(1));
+            }
+        }
     }
 }
 
